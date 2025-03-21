@@ -10,7 +10,7 @@ if (!qrData.value) {
 <template>
     <div v-if="qrData.type === 'product'">
         <h1>{{ qrData.name }}</h1>
-        <img :src="qrData.images[0]" />
+        <img :src="qrData.images[0]" alt="" />
         <p>{{ qrData.description }}</p>
     </div>
 </template>
