@@ -1,0 +1,24 @@
+[{
+  "_id": {
+    "$oid": "67dd0edfee53094f56f04609"
+  },
+  "email": "admin@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Admin Giang",
+  "role": "admin",
+  "avatar": "https://i.pravatar.cc/150?u=admin@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-21T07:01:51.249Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-21T07:01:51.249Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-21T07:04:10.539Z"
+  },
+  "campaignsCreated": 0,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+}]

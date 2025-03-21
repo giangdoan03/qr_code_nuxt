@@ -1,0 +1,135 @@
+[{
+  "_id": {
+    "$oid": "67dd2c7169f516f3fe5c07e6"
+  },
+  "name": "vCard",
+  "type": "vcard",
+  "description": "QR Code cho danh thiếp số (Thông tin cá nhân)",
+  "fields": [
+    {
+      "label": "Tên",
+      "name": "name",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Số điện thoại",
+      "name": "phone",
+      "type": "text"
+    },
+    {
+      "label": "Email",
+      "name": "email",
+      "type": "email"
+    },
+    {
+      "label": "Website",
+      "name": "website",
+      "type": "url"
+    }
+  ],
+  "active": true,
+  "createdAt": {
+    "$date": "2025-03-21T09:08:01.495Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67dd2c7169f516f3fe5c07e7"
+  },
+  "name": "Sản phẩm",
+  "type": "product",
+  "description": "QR Code cho thông tin sản phẩm, liên kết sản phẩm",
+  "fields": [
+    {
+      "label": "Tên sản phẩm",
+      "name": "productName",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Giá",
+      "name": "price",
+      "type": "number"
+    },
+    {
+      "label": "Đường dẫn sản phẩm",
+      "name": "productUrl",
+      "type": "url"
+    }
+  ],
+  "active": true,
+  "createdAt": {
+    "$date": "2025-03-21T09:08:01.495Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67dd2c7169f516f3fe5c07e8"
+  },
+  "name": "Doanh nghiệp",
+  "type": "business",
+  "description": "QR Code cho thông tin doanh nghiệp",
+  "fields": [
+    {
+      "label": "Tên doanh nghiệp",
+      "name": "businessName",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Số điện thoại",
+      "name": "phone",
+      "type": "text"
+    },
+    {
+      "label": "Địa chỉ",
+      "name": "address",
+      "type": "text"
+    },
+    {
+      "label": "Website",
+      "name": "website",
+      "type": "url"
+    }
+  ],
+  "active": true,
+  "createdAt": {
+    "$date": "2025-03-21T09:08:01.495Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67dd2c7169f516f3fe5c07e9"
+  },
+  "name": "Sự kiện",
+  "type": "event",
+  "description": "QR Code cho sự kiện, hội nghị, hội thảo",
+  "fields": [
+    {
+      "label": "Tên sự kiện",
+      "name": "eventName",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Ngày diễn ra",
+      "name": "eventDate",
+      "type": "date"
+    },
+    {
+      "label": "Địa điểm",
+      "name": "location",
+      "type": "text"
+    },
+    {
+      "label": "Website sự kiện",
+      "name": "eventUrl",
+      "type": "url"
+    }
+  ],
+  "active": true,
+  "createdAt": {
+    "$date": "2025-03-21T09:08:01.495Z"
+  }
+}]

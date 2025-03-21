@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "67dd1c90ee53094f56f0460a"
+  },
+  "name": "Chiến dịch đầu tiên",
+  "description": "Demo campaign cho sản phẩm",
+  "type": "product",
+  "content": {
+    "productName": "Giày Sneaker ABC",
+    "price": "1,200,000đ",
+    "link": "https://example.com/sneaker-abc"
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-21T08:00:16.456Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-21T08:00:16.456Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67dd1d289d51e710e0b88dd3"
+  },
+  "name": "Chiến dịch vCard Demo",
+  "description": "QR Code vCard cho Giang",
+  "type": "vcard",
+  "content": {
+    "name": "Nguyễn Văn Giang",
+    "phone": "0123456789",
+    "email": "giang@example.com"
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-21T08:02:48.295Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-21T08:02:48.295Z"
+  }
+}]
