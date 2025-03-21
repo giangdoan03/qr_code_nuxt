@@ -4,7 +4,7 @@
         <div
             v-if="isOpen && !isDesktop"
             class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            @click="toggleSidebar"
+            @click="$emit('toggleSidebar')"
         ></div>
     </Transition>
 
@@ -16,7 +16,7 @@
         >
             <div class="flex items-center justify-between h-16 px-4 border-b">
                 <h2 class="text-xl font-bold text-blue-600">QR Admin</h2>
-                <button class="md:hidden" @click="toggleSidebar">✕</button>
+                <button class="md:hidden" @click="$emit('toggleSidebar')">✕</button>
             </div>
 
             <nav class="flex-1 overflow-y-auto p-4">
@@ -75,10 +75,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const props = defineProps({
-    isOpen: Boolean,
-    toggleSidebar: Function
+defineProps({
+    isOpen: Boolean
 })
+
+const emit = defineEmits(['toggleSidebar'])
 
 const isQRMenuOpen = ref(false)
 const toggleQRMenu = () => {
@@ -100,6 +101,7 @@ onUnmounted(() => {
     window.removeEventListener('resize', checkWindow)
 })
 </script>
+
 
 <style scoped>
 /* Fade in/out for overlay */
@@ -135,5 +137,4 @@ onUnmounted(() => {
     opacity: 0;
     transform: scaleY(0.95);
 }
-
 </style>
