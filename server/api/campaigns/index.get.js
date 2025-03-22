@@ -1,4 +1,4 @@
-import { getDb } from '../../utils/db'
+import {getDb} from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
     try {
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
             .find(filter)
             .skip(skip)
             .limit(limit)
-            .sort({ createdAt: -1 })
+            .sort({createdAt: -1})
             .toArray()
 
         // Tổng số documents cho filter hiện tại

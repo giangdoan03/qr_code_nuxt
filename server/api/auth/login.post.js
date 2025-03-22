@@ -6,8 +6,7 @@ export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
 
-        console.log('📥 Body nhận từ client:', body)
-
+        // Kiểm tra dữ liệu đầu vào
         if (!body.email || !body.password) {
             throw createError({
                 statusCode: 400,
@@ -22,7 +21,6 @@ export default defineEventHandler(async (event) => {
         const user = await db.collection('users').findOne({ email: body.email })
 
         if (!user) {
-            console.log('❌ Không tìm thấy email:', body.email)
             throw createError({
                 statusCode: 401,
                 statusMessage: 'Email không tồn tại!',
@@ -30,16 +28,10 @@ export default defineEventHandler(async (event) => {
             })
         }
 
-        console.log('✅ User tìm thấy:', user.email)
-        console.log('👉 Password nhập vào:', body.password)
-        console.log('👉 Password lưu Mongo:', user.password)
+        // So sánh mật khẩu đã hash
+        const isPasswordValid = await bcrypt.compare(body.password, user.password)
 
-        // So sánh mật khẩu
-        const passwordValid = await bcrypt.compare(body.password, user.password)
-
-        console.log('✅ Kết quả so sánh mật khẩu:', passwordValid)
-
-        if (!passwordValid) {
+        if (!isPasswordValid) {
             throw createError({
                 statusCode: 401,
                 statusMessage: 'Sai mật khẩu!',
@@ -49,28 +41,35 @@ export default defineEventHandler(async (event) => {
 
         // Tạo JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email, role: user.role },
+            {
+                id: user._id.toString(), // bảo đảm _id là string
+                email: user.email,
+                role: user.role
+            },
             process.env.JWT_SECRET || 'yourDefaultSecret',
             { expiresIn: '1d' }
         )
 
-        console.log('🎉 Đăng nhập thành công!')
+        console.log('🎉 Đăng nhập thành công:', user.email)
 
-        // Xoá password trước khi trả về thông tin user
-        const { password, ...userData } = user
+        // Xoá trường nhạy cảm trước khi trả user về
+        const { password, ...userSafeData } = user
 
-        // Trả về token + thông tin user
+        // Trả response
         return {
             success: true,
             message: 'Đăng nhập thành công!',
             token,
-            user: userData
+            user: userSafeData
         }
 
     } catch (err) {
         console.log('🔥 Lỗi đăng nhập:', err.message)
-
         // Trả về lỗi chuẩn REST API
-        return sendError(event, err)
+        throw createError({
+            statusCode: err.statusCode || 500,
+            statusMessage: err.statusMessage || 'Đã xảy ra lỗi!',
+            message: err.message || 'Đăng nhập thất bại!'
+        })
     }
 })

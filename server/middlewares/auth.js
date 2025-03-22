@@ -1,7 +1,5 @@
-import jwt from 'jsonwebtoken'
-
 export default defineEventHandler(async (event) => {
-    const token = getCookie(event, 'token')
+    const token = getCookie(event, 'token') || event.headers.authorization?.split(' ')[1]
 
     if (!token) {
         throw createError({ statusCode: 401, statusMessage: 'Bạn chưa đăng nhập!' })
@@ -11,6 +9,7 @@ export default defineEventHandler(async (event) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         event.context.user = decoded
     } catch (err) {
-        throw createError({ statusCode: 401, statusMessage: 'Token không hợp lệ!' })
+        console.error('❌ Token lỗi:', err.message)
+        throw createError({ statusCode: 401, statusMessage: 'Token không hợp lệ hoặc hết hạn!' })
     }
 })

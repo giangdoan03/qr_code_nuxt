@@ -21,51 +21,89 @@
 
             <nav class="flex-1 overflow-y-auto p-4">
                 <ul class="space-y-2">
+
+                    <!-- Dashboard -->
                     <li>
-                        <NuxtLink to="/dashboard" class="block p-2 rounded hover:bg-blue-100">📊 Dashboard</NuxtLink>
+                        <NuxtLink
+                            to="/dashboard"
+                            :class="linkClass('/dashboard')"
+                        >
+                            📊 Dashboard
+                        </NuxtLink>
                     </li>
 
-                    <!-- QR Campaigns Menu -->
+                    <!-- QR Campaigns -->
                     <li>
                         <div
                             @click="toggleQRMenu"
                             class="flex items-center justify-between cursor-pointer p-2 rounded hover:bg-blue-100"
+                            :class="{ 'bg-blue-100 font-semibold': isQRMenuActive }"
                         >
                             <span>🎯 QR Campaigns</span>
                             <span>{{ isQRMenuOpen ? '▲' : '▼' }}</span>
                         </div>
+
                         <Transition name="submenu">
                             <ul v-if="isQRMenuOpen" class="pl-4 space-y-2 mt-2">
                                 <li>
-                                    <NuxtLink to="/campaigns/create" class="block p-2 rounded hover:bg-blue-100">➕ Tạo Campaign</NuxtLink>
+                                    <NuxtLink :to="'/campaigns/create'" :class="linkClass('/campaigns/create')">
+                                        ➕ Tạo Campaign
+                                    </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/campaigns/vcard" class="block p-2 rounded hover:bg-blue-100">👤 QR vCard</NuxtLink>
+                                    <NuxtLink :to="'/campaigns/vcard'" :class="linkClass('/campaigns/vcard')">
+                                        👤 QR vCard
+                                    </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/campaigns/product" class="block p-2 rounded hover:bg-blue-100">📦 QR Sản phẩm</NuxtLink>
+                                    <NuxtLink :to="'/campaigns/product'" :class="linkClass('/campaigns/product')">
+                                        📦 QR Sản phẩm
+                                    </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/campaigns/business" class="block p-2 rounded hover:bg-blue-100">🏢 QR Doanh nghiệp</NuxtLink>
+                                    <NuxtLink :to="'/campaigns/business'" :class="linkClass('/campaigns/business')">
+                                        🏢 QR Doanh nghiệp
+                                    </NuxtLink>
                                 </li>
                                 <li>
-                                    <NuxtLink to="/campaigns/manage" class="block p-2 rounded hover:bg-blue-100">📋 Quản lý Campaign</NuxtLink>
+                                    <NuxtLink :to="'/campaigns/manage'" :class="linkClass('/campaigns/manage')">
+                                        📋 Quản lý Campaign
+                                    </NuxtLink>
                                 </li>
                             </ul>
                         </Transition>
                     </li>
 
+                    <!-- Analytics -->
                     <li>
-                        <NuxtLink to="/analytics" class="block p-2 rounded hover:bg-blue-100">📈 Analytics</NuxtLink>
+                        <NuxtLink
+                            to="/analytics"
+                            :class="linkClass('/analytics')"
+                        >
+                            📈 Analytics
+                        </NuxtLink>
                     </li>
 
+                    <!-- Users -->
                     <li>
-                        <NuxtLink to="/users" class="block p-2 rounded hover:bg-blue-100">👤 Users</NuxtLink>
+                        <NuxtLink
+                            to="/users"
+                            :class="linkClass('/users')"
+                        >
+                            👤 Users
+                        </NuxtLink>
                     </li>
 
+                    <!-- Settings -->
                     <li>
-                        <NuxtLink to="/settings" class="block p-2 rounded hover:bg-blue-100">⚙️ Cài đặt</NuxtLink>
+                        <NuxtLink
+                            to="/settings"
+                            :class="linkClass('/settings')"
+                        >
+                            ⚙️ Cài đặt
+                        </NuxtLink>
                     </li>
+
                 </ul>
             </nav>
         </aside>
@@ -73,20 +111,41 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-defineProps({
-    isOpen: Boolean
-})
-
+// Props & Emits
+defineProps({ isOpen: Boolean })
 const emit = defineEmits(['toggleSidebar'])
 
+// State
 const isQRMenuOpen = ref(false)
+const isDesktop = ref(false)
+const route = useRoute()
+
+// Kiểm tra route hiện tại
+const linkClass = (path) => {
+    return [
+        'block p-2 rounded hover:bg-blue-100 transition',
+        route.path === path ? 'bg-blue-100 font-semibold text-blue-600' : 'text-gray-700'
+    ]
+}
+
+// Mở submenu QR nếu đang ở các page thuộc QR Campaigns
+const isQRMenuActive = computed(() => {
+    return route.path.startsWith('/campaigns')
+})
+
+// Đồng bộ menu QR open theo URL
+onMounted(() => {
+    if (isQRMenuActive.value) {
+        isQRMenuOpen.value = true
+    }
+})
+
 const toggleQRMenu = () => {
     isQRMenuOpen.value = !isQRMenuOpen.value
 }
-
-const isDesktop = ref(false)
 
 const checkWindow = () => {
     isDesktop.value = window.innerWidth >= 768
@@ -102,9 +161,7 @@ onUnmounted(() => {
 })
 </script>
 
-
 <style scoped>
-/* Fade in/out for overlay */
 .fade-enter-active, .fade-leave-active {
     transition: opacity 0.3s;
 }
@@ -112,27 +169,22 @@ onUnmounted(() => {
     opacity: 0;
 }
 
-/* Submenu transition */
 .submenu-enter-active, .submenu-leave-active {
     transition: all 0.3s ease;
     transform-origin: top;
 }
-
 .submenu-enter-from {
     opacity: 0;
     transform: scaleY(0.95);
 }
-
 .submenu-enter-to {
     opacity: 1;
     transform: scaleY(1);
 }
-
 .submenu-leave-from {
     opacity: 1;
     transform: scaleY(1);
 }
-
 .submenu-leave-to {
     opacity: 0;
     transform: scaleY(0.95);

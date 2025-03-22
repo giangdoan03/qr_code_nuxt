@@ -8,6 +8,7 @@ const router = useRouter()
 const email = ref('')
 const password = ref('')
 
+// Dùng layout rỗng cho trang login
 definePageMeta({
     layout: 'empty'
 })
@@ -23,26 +24,34 @@ const login = async () => {
         })
 
         if (error.value) {
-            console.log('❌ Error:', error.value)
+            console.log('❌ Lỗi trả về từ server:', error.value)
             message.error(error.value?.data?.message || 'Đăng nhập thất bại!')
             return
         }
 
-        console.log('📥 Response:', data.value)
+        console.log('📥 Response data:', data.value)
 
-        if (data.value.token) {
-            useCookie('token').value = data.value.token
+        if (data.value?.token && data.value?.user) {
+            // Lưu token
+            const token = useCookie('token', { path: '/' })
+            token.value = data.value.token
+
+            // Lưu thông tin user vào cookie (có thể dùng pinia store để reactive thêm)
+            const user = useCookie('user', { path: '/' })
+            user.value = data.value.user
+
             message.success('Đăng nhập thành công!')
+
+            // Điều hướng về dashboard
             router.push('/dashboard')
         } else {
             message.error('Sai thông tin đăng nhập!')
         }
     } catch (err) {
-        console.log('🔥 Catch lỗi:', err)
-        message.error('Đăng nhập thất bại!')
+        console.log('🔥 Lỗi catch:', err)
+        message.error('Đăng nhập thất bại! Hệ thống đang bảo trì hoặc lỗi kết nối.')
     }
 }
-
 </script>
 
 <template>
@@ -52,15 +61,30 @@ const login = async () => {
 
             <div class="mb-4">
                 <label class="block mb-1">Email</label>
-                <input v-model="email" type="email" required class="w-full p-2 border rounded"/>
+                <input
+                    v-model="email"
+                    type="email"
+                    required
+                    placeholder="Nhập email"
+                    class="w-full p-2 border rounded"
+                />
             </div>
 
             <div class="mb-6">
                 <label class="block mb-1">Mật khẩu</label>
-                <input v-model="password" type="password" required class="w-full p-2 border rounded"/>
+                <input
+                    v-model="password"
+                    type="password"
+                    required
+                    placeholder="Nhập mật khẩu"
+                    class="w-full p-2 border rounded"
+                />
             </div>
 
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+            <button
+                type="submit"
+                class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            >
                 Đăng nhập
             </button>
 
