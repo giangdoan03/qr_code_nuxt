@@ -11,8 +11,8 @@ module.exports = {
             title: 'QR Marketing Dashboard',
             titleTemplate: '%s - QR Marketing Dashboard',
             meta: [
-                { name: 'description', content: 'Nền tảng tạo và quản lý QR Code chuyên nghiệp' },
-                { charset: 'utf-8' }
+                {name: 'description', content: 'Nền tảng tạo và quản lý QR Code chuyên nghiệp'},
+                {charset: 'utf-8'}
             ]
         }
     },
@@ -36,7 +36,6 @@ module.exports = {
         }
     },
 
-    // ✅ Không cần plugins nữa!
     vite: {},
 
     hooks: {

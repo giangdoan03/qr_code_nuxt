@@ -21,4 +21,244 @@
   "loginHistory": [],
   "2faEnabled": false,
   "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28502"
+  },
+  "email": "admin@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Admin Giang",
+  "role": "admin",
+  "avatar": "https://i.pravatar.cc/150?u=admin@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 2,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28503"
+  },
+  "email": "user1@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Nguyễn Văn A",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user1@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 3,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28504"
+  },
+  "email": "user2@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Trần Thị B",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user2@example.com",
+  "status": "inactive",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 1,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28505"
+  },
+  "email": "user3@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Phạm Văn C",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user3@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 0,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28506"
+  },
+  "email": "user4@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Lê Thị D",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user4@example.com",
+  "status": "inactive",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 5,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28507"
+  },
+  "email": "user5@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Đỗ Văn E",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user5@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 8,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28508"
+  },
+  "email": "admin2@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Admin Nguyễn",
+  "role": "admin",
+  "avatar": "https://i.pravatar.cc/150?u=admin2@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 4,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea28509"
+  },
+  "email": "user6@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Hoàng Thị F",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user6@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 2,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea2850a"
+  },
+  "email": "user7@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Vũ Văn G",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user7@example.com",
+  "status": "inactive",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 7,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
+},
+{
+  "_id": {
+    "$oid": "67de86ee53acc0b8eea2850b"
+  },
+  "email": "user8@example.com",
+  "password": "$2b$10$0FPZNC6THgUzSeO56b7dze.372tho9gqlP7LuWnqz2oaB7h65emBy",
+  "name": "Mai Văn H",
+  "role": "user",
+  "avatar": "https://i.pravatar.cc/150?u=user8@example.com",
+  "status": "active",
+  "lastLogin": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "createdAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T09:46:22.923Z"
+  },
+  "campaignsCreated": 6,
+  "loginHistory": [],
+  "2faEnabled": false,
+  "provider": "local"
 }]

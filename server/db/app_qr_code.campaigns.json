@@ -15,7 +15,12 @@
     "$date": "2025-03-21T08:00:16.456Z"
   },
   "updatedAt": {
-    "$date": "2025-03-21T08:00:16.456Z"
+    "$date": "2025-03-21T15:46:42.403Z"
+  },
+  "qrCodeUrl": "https://cdn.qr.giang.vn/qr123.png",
+  "url": "https://qr.giang.vn/vcard/123",
+  "userId": {
+    "$oid": "65fe1b123456789abcde4567"
   }
 },
 {
@@ -35,6 +40,98 @@
     "$date": "2025-03-21T08:02:48.295Z"
   },
   "updatedAt": {
-    "$date": "2025-03-21T08:02:48.295Z"
+    "$date": "2025-03-21T15:46:42.403Z"
+  },
+  "qrCodeUrl": "https://cdn.qr.giang.vn/qr123.png",
+  "url": "https://qr.giang.vn/vcard/123",
+  "userId": {
+    "$oid": "65fe1b123456789abcde4567"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ded03e00b239c116eb65fc"
+  },
+  "name": "Chiến dịch sản phẩm ABC",
+  "description": "Giới thiệu sản phẩm giày mới",
+  "type": "product",
+  "content": {
+    "name": "Giày Sneaker XYZ",
+    "price": 1200000,
+    "link": "https://example.com/product/sneaker-xyz"
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-22T14:59:10.524Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-23T09:18:42.671Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ded06700b239c116eb65fd"
+  },
+  "name": "Chiến dịch vCard Giang",
+  "description": "Thông tin cá nhân của Giang",
+  "type": "vcard",
+  "content": {
+    "fullName": "Nguyễn Văn Giang",
+    "phone": "0123456789",
+    "email": "giang@example.com",
+    "address": "123 Đường ABC, Hà Nội",
+    "website": "https://giang.vn"
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-22T14:59:51.078Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-23T09:18:55.829Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ded07100b239c116eb65fe"
+  },
+  "name": "Chiến dịch Doanh nghiệp ABC Corp xxxxx",
+  "description": "Chiến dịch giới thiệu doanh nghiệp ABC xxxxx",
+  "type": "business",
+  "content": {
+    "companyName": "ABC Corporation",
+    "address": "456 Đường XYZ, TP.HCM",
+    "phone": "0987654321",
+    "email": "contact@abc-corp.com",
+    "website": "https://abc-corp.com",
+    "taxCode": "0301234567"
+  },
+  "status": "inactive",
+  "createdAt": {
+    "$date": "2025-03-22T15:00:01.664Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-23T09:31:35.630Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ded81529e67d79cf7c28da"
+  },
+  "name": "Chiến dịch vCard - Đoàn Văn Giang",
+  "description": "Thông tin cá nhân của Đoàn Văn Giang",
+  "type": "vcard",
+  "content": {
+    "fullName": "Đoàn Văn Giang",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "Tây Mỗ, Nam Từ Liêm",
+    "website": "http://qrcodeonl.com.vn"
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-22T15:32:37.984Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-22T15:32:37.984Z"
   }
 }]
