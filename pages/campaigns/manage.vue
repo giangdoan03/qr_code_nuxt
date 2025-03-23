@@ -1,13 +1,13 @@
 <template>
     <div class="bg-white rounded shadow w-full">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold mb-4">📋 Quản lý Campaign</h2>
+        <div class="p-4">
+            <h2 class="text-2xl font-bold mb-4">📋 Quản lý QR code</h2>
 
             <!-- Bộ lọc -->
             <div class="flex flex-wrap gap-4 mb-6">
                 <div>
-                    <label class="block mb-1 text-sm font-medium">Loại Campaign</label>
-                    <select v-model="filters.type" class="border rounded px-2 py-1">
+                    <label class="block mb-1 text-sm font-medium">Loại QR code</label>
+                    <select v-model="filters.type" class="border rounded px-2 py-2">
                         <option value="">Tất cả</option>
                         <option value="vcard">👤 vCard</option>
                         <option value="product">📦 Sản phẩm</option>
@@ -17,7 +17,7 @@
 
                 <div>
                     <label class="block mb-1 text-sm font-medium">Trạng thái</label>
-                    <select v-model="filters.status" class="border rounded px-2 py-1">
+                    <select v-model="filters.status" class="border rounded px-2 py-2">
                         <option value="">Tất cả</option>
                         <option value="active">Hoạt động</option>
                         <option value="inactive">Tạm dừng</option>
@@ -66,9 +66,9 @@
                                     />
                                     <div
                                         :class="[
-                      'w-11 h-6 rounded-full transition',
-                      item.status === 'active' ? 'bg-green-500' : 'bg-gray-300'
-                    ]"
+                        'w-11 h-6 rounded-full transition',
+                        item.status === 'active' ? 'bg-green-500' : 'bg-gray-300'
+                      ]"
                                     ></div>
                                 </label>
                             </td>
@@ -77,9 +77,9 @@
                             <td class="py-3 px-4">{{ formatDate(item.createdAt) }}</td>
 
                             <td class="py-3 px-4 text-center space-x-2">
-                                <NuxtLink :to="`/campaigns/${item._id}`" class="text-blue-600 hover:underline">Xem</NuxtLink>
-                                <NuxtLink :to="`/campaigns/${item._id}/edit`" class="text-yellow-600 hover:underline">Sửa</NuxtLink>
-                                <button @click="deleteCampaign(item._id)" class="text-red-600 hover:underline">Xóa</button>
+                                <NuxtLink :to="`/campaigns/${item._id}`" class="text-blue-600 text-lg hover:underline">👁️</NuxtLink>
+                                <NuxtLink :to="`/campaigns/edit/${item._id}`" class="text-yellow-600 text-lg hover:underline">✏️</NuxtLink>
+                                <button @click="deleteCampaign(item._id)" class="text-red-600 text-lg hover:underline">🗑️</button>
                             </td>
                         </tr>
                         </tbody>
@@ -98,27 +98,32 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { useNuxtApp } from '#app'
 
 definePageMeta({ layout: 'default' })
 
 const { $axios } = useNuxtApp()
 
+// States
 const campaigns = ref([])
 const loading = ref(true)
 const page = ref(1)
 const limit = 5
 const hasMore = ref(false)
 
+// Filters
 const filters = reactive({
     type: '',
     status: ''
 })
 
+// Fetch data
 const fetchCampaigns = async () => {
     loading.value = true
     try {
+        console.log('🔎 Fetching campaigns with filters:', filters, 'Page:', page.value)
+
         const res = await $axios.get('/api/campaigns', {
             params: {
                 page: page.value,
@@ -137,6 +142,7 @@ const fetchCampaigns = async () => {
     }
 }
 
+// Filter handlers
 const applyFilter = () => {
     page.value = 1
     fetchCampaigns()
@@ -149,6 +155,7 @@ const resetFilter = () => {
     fetchCampaigns()
 }
 
+// Pagination handlers
 const nextPage = () => {
     if (hasMore.value) {
         page.value++
@@ -163,6 +170,7 @@ const prevPage = () => {
     }
 }
 
+// CRUD actions
 const deleteCampaign = async (id) => {
     if (!confirm('Bạn có chắc muốn xóa campaign này không?')) return
 
@@ -186,6 +194,7 @@ const toggleStatus = async (item) => {
     }
 }
 
+// Export CSV
 const exportCSV = () => {
     const headers = ['Tên Campaign', 'Loại', 'Trạng thái', 'Số lượt quét', 'Ngày tạo']
     const rows = campaigns.value.map(item => [
@@ -211,11 +220,19 @@ const exportCSV = () => {
     document.body.removeChild(link)
 }
 
+// Utils
 const formatDate = (dateStr) => {
     const date = new Date(dateStr)
     return date.toLocaleDateString('vi-VN')
 }
 
+// Auto-fetch on filters change (Optional: realtime filter)
+watch(() => [filters.type, filters.status], () => {
+    page.value = 1
+    fetchCampaigns()
+})
+
+// Init fetch
 onMounted(() => {
     fetchCampaigns()
 })

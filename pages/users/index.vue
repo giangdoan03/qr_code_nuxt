@@ -3,25 +3,23 @@
         <h2 class="text-2xl font-bold mb-6">👥 Quản lý Người dùng</h2>
 
         <!-- Bộ lọc -->
-        <div class="flex flex-wrap gap-4 mb-4">
+        <div class="flex flex-wrap gap-4 mb-4 items-end">
             <div>
                 <label class="block mb-1 text-sm font-medium">Quyền</label>
-                <select v-model="filters.role" class="border rounded px-2 py-1">
+                <select v-model="filters.role" class="border rounded px-2 py-2">
                     <option value="">Tất cả</option>
                     <option value="admin">Admin</option>
                     <option value="user">User</option>
                 </select>
             </div>
-
             <div>
-                <label class="block mb-1 text-sm f\ont-medium">Trạng thái</label>
-                <select v-model="filters.status" class="border rounded px-2 py-1">
+                <label class="block mb-1 text-sm font-medium">Trạng thái</label>
+                <select v-model="filters.status" class="border rounded px-2 py-2">
                     <option value="">Tất cả</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                 </select>
             </div>
-
             <div class="flex items-end gap-2">
                 <button @click="applyFilter" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                     Lọc
@@ -30,15 +28,13 @@
                     Xóa lọc
                 </button>
             </div>
+            <!-- Nút thêm user -->
+            <div class="flex items-end">
+                <button @click="openAddModal" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    ➕ Thêm user
+                </button>
+            </div>
         </div>
-
-        <!-- Nút thêm user -->
-        <div class="mb-4">
-            <button @click="openAddModal" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                ➕ Thêm user
-            </button>
-        </div>
-
         <!-- Bảng danh sách user -->
         <div v-if="loading" class="text-center py-10">
             Đang tải dữ liệu...
@@ -63,9 +59,9 @@
                     <td class="py-3 px-4">{{ user.email }}</td>
                     <td class="py-3 px-4 capitalize">{{ user.role }}</td>
                     <td class="py-3 px-4">
-              <span :class="user.status === 'active' ? 'text-green-600' : 'text-red-600'">
-                {{ user.status }}
-              </span>
+                          <span :class="user.status === 'active' ? 'text-green-600' : 'text-red-600'">
+                            {{ user.status }}
+                          </span>
                     </td>
                     <td class="py-3 px-4">{{ formatDate(user.lastLogin) }}</td>
                     <td class="py-3 px-4">{{ formatDate(user.createdAt) }}</td>

@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col md:flex-row gap-6 p-6">
+    <div class="flex flex-col md:flex-row gap-6">
         <!-- Cột 1: Form nhập thông tin -->
-        <div class="flex-1 bg-white rounded shadow p-6">
+        <div class="flex-1 bg-white rounded shadow p-4">
             <h2 class="text-xl font-bold mb-4">🏢 Tạo QR Doanh Nghiệp</h2>
 
             <form @submit.prevent="submitForm" class="space-y-4">

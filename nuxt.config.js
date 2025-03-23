@@ -37,5 +37,11 @@ module.exports = {
     },
 
     // ✅ Không cần plugins nữa!
-    vite: {}
+    vite: {},
+
+    hooks: {
+        'pages:extend'(pages) {
+            // console.log('👉 ROUTES:', JSON.stringify(pages, null, 2))
+        }
+    }
 }

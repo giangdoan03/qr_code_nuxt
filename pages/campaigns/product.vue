@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col md:flex-row gap-6 p-4">
+    <div class="flex flex-col md:flex-row gap-6">
         <!-- CỘT 1: Tạo QR Sản phẩm -->
-        <div class="md:w-1/2 w-full bg-white rounded shadow p-6">
+        <div class="md:w-1/2 w-full bg-white rounded shadow p-4">
             <h2 class="text-2xl font-bold mb-6">📦 Tạo QR Sản phẩm</h2>
 
             <form @submit.prevent="createProductQR" class="space-y-4">

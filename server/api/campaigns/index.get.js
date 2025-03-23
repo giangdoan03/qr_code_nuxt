@@ -1,41 +1,44 @@
-import {getDb} from '../../utils/db'
+import { getDb } from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
     try {
         const db = await getDb()
 
-        // Lấy query params để phân trang và lọc
+        // Lấy query params: page, limit, filter type/status...
         const query = getQuery(event)
 
         const page = parseInt(query.page) || 1
         const limit = parseInt(query.limit) || 10
         const skip = (page - 1) * limit
 
-        // Khởi tạo bộ lọc
+        // Khởi tạo bộ lọc cơ bản
         const filter = {}
 
-        // Nếu có query type thì filter theo type
         if (query.type && query.type !== '') {
             filter.type = query.type
         }
 
-        // Nếu có query status thì filter theo status
         if (query.status && query.status !== '') {
             filter.status = query.status
         }
 
-        console.log('👉 Bộ lọc:', filter)
+        // 👉 Tùy chọn: lọc thêm theo các field trong content (nếu cần)
+        if (query.search && query.search !== '') {
+            filter.name = { $regex: query.search, $options: 'i' }
+        }
 
-        // Lấy danh sách campaigns theo filter + phân trang
+        console.log('👉 Bộ lọc tìm kiếm:', filter)
+
+        // Query MongoDB
         const campaigns = await db
             .collection('campaigns')
             .find(filter)
             .skip(skip)
             .limit(limit)
-            .sort({createdAt: -1})
+            .sort({ createdAt: -1 })
             .toArray()
 
-        // Tổng số documents cho filter hiện tại
+        // Đếm tổng số records theo filter hiện tại
         const total = await db.collection('campaigns').countDocuments(filter)
 
         return {
@@ -45,7 +48,8 @@ export default defineEventHandler(async (event) => {
             pagination: {
                 total,
                 page,
-                limit
+                limit,
+                totalPages: Math.ceil(total / limit)
             }
         }
 

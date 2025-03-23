@@ -6,12 +6,12 @@
         <div class="flex gap-4 mb-6 flex-wrap">
             <div>
                 <label class="block text-sm font-medium mb-1">Từ ngày</label>
-                <input v-model="filters.startDate" type="date" class="border px-2 py-1 rounded"/>
+                <input v-model="filters.startDate" type="date" class="border px-2 py-2 rounded"/>
             </div>
 
             <div>
                 <label class="block text-sm font-medium mb-1">Đến ngày</label>
-                <input v-model="filters.endDate" type="date" class="border px-2 py-1 rounded"/>
+                <input v-model="filters.endDate" type="date" class="border px-2 py-2 rounded"/>
             </div>
 
             <div class="flex items-end">

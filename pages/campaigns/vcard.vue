@@ -1,28 +1,42 @@
 <template>
-    <div class="flex flex-col md:flex-row gap-6 p-6">
+    <div class="flex flex-col md:flex-row gap-6">
         <!-- Cột nhập liệu -->
         <div class="flex-1 bg-white rounded shadow p-6">
             <h2 class="text-xl font-bold mb-4">Tạo QR vCard</h2>
 
             <form @submit.prevent="createVCardQR" class="space-y-4">
+                <!-- Họ tên đầy đủ -->
                 <input
-                    v-model="form.name"
-                    placeholder="Tên"
+                    v-model="form.fullName"
+                    placeholder="Họ và tên đầy đủ"
                     class="border p-2 rounded w-full"
                     required
                 />
+
+                <!-- Số điện thoại -->
                 <input
                     v-model="form.phone"
                     placeholder="Số điện thoại"
                     class="border p-2 rounded w-full"
                     required
                 />
+
+                <!-- Email -->
                 <input
                     v-model="form.email"
                     placeholder="Email"
                     type="email"
                     class="border p-2 rounded w-full"
                 />
+
+                <!-- Địa chỉ -->
+                <input
+                    v-model="form.address"
+                    placeholder="Địa chỉ"
+                    class="border p-2 rounded w-full"
+                />
+
+                <!-- Website -->
                 <input
                     v-model="form.website"
                     placeholder="Website"
@@ -30,6 +44,7 @@
                     class="border p-2 rounded w-full"
                 />
 
+                <!-- Nút tạo QR -->
                 <button
                     type="submit"
                     :disabled="loading"
@@ -44,10 +59,11 @@
         <div class="w-full md:w-1/3 bg-white rounded shadow p-6 flex flex-col items-center">
             <h3 class="text-lg font-semibold mb-4">Preview vCard</h3>
 
-            <div class="border rounded p-4 w-full max-w-xs text-center">
-                <p class="font-bold text-lg mb-2">{{ form.name || 'Tên khách hàng' }}</p>
+            <div class="border rounded p-4 w-full max-w-xs">
+                <p class="font-bold text-lg mb-2">{{ form.fullName || 'Tên khách hàng' }}</p>
                 <p class="text-sm text-gray-600 mb-1">📞 {{ form.phone || 'Số điện thoại' }}</p>
                 <p class="text-sm text-gray-600 mb-1">✉️ {{ form.email || 'Email' }}</p>
+                <p class="text-sm text-gray-600 mb-1">🏠 {{ form.address || 'Địa chỉ' }}</p>
                 <p class="text-sm text-gray-600 mb-3">🌐 {{ form.website || 'Website' }}</p>
 
                 <!-- QR code preview -->
@@ -67,6 +83,7 @@
     </div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue'
 import { useNuxtApp } from '#app'
@@ -79,10 +96,11 @@ definePageMeta({
 const { $axios } = useNuxtApp()
 
 const form = ref({
-    name: '',
+    fullName: '',
     phone: '',
     email: '',
-    website: '',
+    address: '',
+    website: ''
 })
 
 const loading = ref(false)
@@ -93,18 +111,20 @@ const createVCardQR = async () => {
 
     try {
         const res = await $axios.post('/api/campaigns/create', {
-            name: form.value.name,
+            name: `Chiến dịch vCard - ${form.value.fullName || 'Không tên'}`,
             type: 'vcard',
+            description: `Thông tin cá nhân của ${form.value.fullName}`,
             content: {
-                name: form.value.name,
+                fullName: form.value.fullName,
                 phone: form.value.phone,
                 email: form.value.email,
-                website: form.value.website,
-            },
+                address: form.value.address,
+                website: form.value.website
+            }
         })
 
         message.success('Tạo QR vCard thành công!')
-        qrResult.value = res.data.data // { qrCodeUrl: '', url: '' } giả định backend trả về
+        qrResult.value = res.data.data // ✅ backend trả về qrCodeUrl và url nếu có
     } catch (error) {
         console.error('❌ Lỗi tạo vCard:', error)
         message.error('Tạo QR thất bại!')
@@ -113,6 +133,7 @@ const createVCardQR = async () => {
     }
 }
 </script>
+
 
 <style scoped>
 /* Responsive tweaks */

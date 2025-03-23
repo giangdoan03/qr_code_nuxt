@@ -39,17 +39,17 @@
                             class="flex items-center justify-between cursor-pointer p-2 rounded hover:bg-blue-100"
                             :class="{ 'bg-blue-100 font-semibold': isQRMenuActive }"
                         >
-                            <span>🎯 QR Campaigns</span>
+                            <span>🎯 QR Marketing</span>
                             <span>{{ isQRMenuOpen ? '▲' : '▼' }}</span>
                         </div>
 
                         <Transition name="submenu">
                             <ul v-if="isQRMenuOpen" class="pl-4 space-y-2 mt-2">
-                                <li>
-                                    <NuxtLink :to="'/campaigns/create'" :class="linkClass('/campaigns/create')">
-                                        ➕ Tạo Campaign
-                                    </NuxtLink>
-                                </li>
+<!--                                <li>-->
+<!--                                    <NuxtLink :to="'/campaigns/create'" :class="linkClass('/campaigns/create')">-->
+<!--                                        ➕ Tạo Campaign-->
+<!--                                    </NuxtLink>-->
+<!--                                </li>-->
                                 <li>
                                     <NuxtLink :to="'/campaigns/vcard'" :class="linkClass('/campaigns/vcard')">
                                         👤 QR vCard
@@ -67,7 +67,7 @@
                                 </li>
                                 <li>
                                     <NuxtLink :to="'/campaigns/manage'" :class="linkClass('/campaigns/manage')">
-                                        📋 Quản lý Campaign
+                                        📋 Quản lý QR code
                                     </NuxtLink>
                                 </li>
                             </ul>
