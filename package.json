@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@chenfengyuan/vue-qrcode": "^2.0.0",
     "@emotion/react": "^11.14.0",
     "ant-design-vue": "^4.0.0-rc.6",
     "axios": "^1.8.4",
@@ -23,6 +24,7 @@
     "nuxt": "^3.16.1",
     "twin.macro": "^3.4.1",
     "vue": "^3.5.13",
+    "vue-qrcode": "^2.2.2",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {

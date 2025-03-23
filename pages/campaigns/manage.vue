@@ -25,9 +25,15 @@
                 </div>
 
                 <div class="flex items-end gap-2">
-                    <button @click="applyFilter" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Lọc</button>
-                    <button @click="resetFilter" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Xóa lọc</button>
-                    <button @click="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">📤 Xuất CSV</button>
+                    <button @click="applyFilter" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Lọc
+                    </button>
+                    <button @click="resetFilter" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Xóa
+                        lọc
+                    </button>
+                    <button @click="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">📤
+                        Xuất CSV
+                    </button>
                 </div>
             </div>
 
@@ -64,12 +70,7 @@
                                         :checked="item.status === 'active'"
                                         @change="toggleStatus(item)"
                                     />
-                                    <div
-                                        :class="[
-                        'w-11 h-6 rounded-full transition',
-                        item.status === 'active' ? 'bg-green-500' : 'bg-gray-300'
-                      ]"
-                                    ></div>
+                                    <div :class="['w-11 h-6 rounded-full transition',item.status === 'active' ? 'bg-green-500' : 'bg-gray-300']"></div>
                                 </label>
                             </td>
 
@@ -77,19 +78,58 @@
                             <td class="py-3 px-4">{{ formatDate(item.createdAt) }}</td>
 
                             <td class="py-3 px-4 text-center space-x-2">
-                                <NuxtLink :to="`/campaigns/${item._id}`" class="text-blue-600 text-lg hover:underline">👁️</NuxtLink>
-                                <NuxtLink :to="`/campaigns/edit/${item._id}`" class="text-yellow-600 text-lg hover:underline">✏️</NuxtLink>
-                                <button @click="deleteCampaign(item._id)" class="text-red-600 text-lg hover:underline">🗑️</button>
+                                <!-- Xem chi tiết campaign -->
+                                <NuxtLink
+                                    :to="`/campaigns/${item._id}`"
+                                    class="text-blue-600 text-lg hover:underline"
+                                    title="Xem chi tiết campaign"
+                                >
+                                    👁️
+                                </NuxtLink>
+
+                                <!-- Sửa campaign -->
+                                <NuxtLink
+                                    :to="`/campaigns/edit/${item._id}`"
+                                    class="text-yellow-600 text-lg hover:underline"
+                                    title="Chỉnh sửa campaign"
+                                >
+                                    ✏️
+                                </NuxtLink>
+
+                                <!-- Xóa campaign -->
+                                <button
+                                    @click="deleteCampaign(item._id)"
+                                    class="text-red-600 text-lg hover:underline"
+                                    title="Xóa campaign"
+                                >
+                                    🗑️
+                                </button>
+
+                                <!-- Link Public Viewer campaign (cho khách xem) -->
+                                <a
+                                    :href="`/public/${item._id}`"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-green-600 text-lg hover:underline"
+                                    title="Xem công khai"
+                                >
+                                    🌐
+                                </a>
                             </td>
+
                         </tr>
                         </tbody>
                     </table>
 
                     <!-- Pagination -->
                     <div class="flex justify-between items-center mt-4">
-                        <button @click="prevPage" :disabled="page === 1" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Trang trước</button>
+                        <button @click="prevPage" :disabled="page === 1"
+                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Trang trước
+                        </button>
                         <span>Trang {{ page }}</span>
-                        <button @click="nextPage" :disabled="!hasMore" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Trang sau</button>
+                        <button @click="nextPage" :disabled="!hasMore"
+                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Trang sau
+                        </button>
                     </div>
                 </div>
             </div>
@@ -98,12 +138,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
-import { useNuxtApp } from '#app'
+import {ref, reactive, onMounted, watch} from 'vue'
+import {useNuxtApp} from '#app'
 
-definePageMeta({ layout: 'default' })
+definePageMeta({layout: 'default'})
 
-const { $axios } = useNuxtApp()
+const {$axios} = useNuxtApp()
 
 // States
 const campaigns = ref([])
@@ -187,7 +227,7 @@ const deleteCampaign = async (id) => {
 const toggleStatus = async (item) => {
     const newStatus = item.status === 'active' ? 'inactive' : 'active'
     try {
-        await $axios.put(`/api/campaigns/${item._id}/status`, { status: newStatus })
+        await $axios.put(`/api/campaigns/${item._id}/status`, {status: newStatus})
         item.status = newStatus
     } catch (err) {
         console.error('❌ Cập nhật trạng thái thất bại:', err)
