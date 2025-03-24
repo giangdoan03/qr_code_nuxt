@@ -103,19 +103,32 @@
                     <a :href="campaign.url" target="_blank" class="text-blue-600 hover:underline break-all">{{ campaign.url }}</a>
                 </div>
 
-                <div v-if="campaign.qrCodeUrl" class="mt-4">
-                    <img :src="campaign.qrCodeUrl" alt="QR Code" class="w-40 h-40 mx-auto" />
-                </div>
+                <!-- QR Code component -->
+                <VueQrcode
+                    ref="qrRef"
+                    :value="campaign.url"
+                    :options="{ width: 200 }"
+                    class="mx-auto mb-4"
+                />
+
+                <!-- Nút tải QR code -->
+                <button
+                    @click="downloadQR"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm"
+                >
+                    📥 Tải QR Code
+                </button>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNuxtApp } from '#app'
 import { message } from 'ant-design-vue'
+import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 const route = useRoute()
 const router = useRouter()
@@ -133,6 +146,7 @@ const form = reactive({
 
 const loading = ref(true)
 const updating = ref(false)
+const qrRef = ref(null)
 
 const fetchCampaignDetail = async () => {
     loading.value = true
@@ -149,6 +163,7 @@ const fetchCampaignDetail = async () => {
             content: { ...campaign.value.content }
         })
 
+        await nextTick()
     } catch (err) {
         console.error('❌ Lỗi lấy chi tiết campaign:', err)
         message.error('Không tìm thấy campaign!')
@@ -169,7 +184,6 @@ const updateCampaign = async () => {
 
         message.success('Cập nhật campaign thành công!')
         router.push(`/campaigns/${route.params.id}`)
-
     } catch (err) {
         console.error('❌ Lỗi cập nhật campaign:', err)
         message.error('Cập nhật thất bại!')
@@ -180,6 +194,20 @@ const updateCampaign = async () => {
 
 const formatCurrency = (number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number)
+}
+
+const downloadQR = () => {
+    const canvas = qrRef.value?.$el
+    if (!canvas) {
+        alert('QR chưa sẵn sàng!')
+        return
+    }
+
+    const dataUrl = canvas.toDataURL('image/png')
+    const link = document.createElement('a')
+    link.href = dataUrl
+    link.download = `${campaign.value.name || 'qr-code'}.png`
+    link.click()
 }
 
 onMounted(() => {

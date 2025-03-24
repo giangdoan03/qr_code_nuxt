@@ -134,4 +134,142 @@
   "updatedAt": {
     "$date": "2025-03-22T15:32:37.984Z"
   }
+},
+{
+  "_id": {
+    "$oid": "67e18177eff5fb73e6d94540"
+  },
+  "name": "Chiến dịch vCard - Đoàn Văn Giang",
+  "description": "Thông tin cá nhân của Đoàn Văn Giang",
+  "type": "vcard",
+  "content": {
+    "fullName": "Đoàn Văn Giang",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "tây mỗ",
+    "website": "https://tuyensinh.thcsthanhxuan.vn/",
+    "avatar": ""
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-24T15:59:51.634Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-24T15:59:51.634Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e1852c13285e88de9ce089"
+  },
+  "name": "Chiến dịch vCard - Đoàn Văn Giang",
+  "description": "Thông tin cá nhân của Đoàn Văn Giang",
+  "type": "vcard",
+  "content": {
+    "fullName": "Đoàn Văn Giang",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "Tây mỗ",
+    "website": "",
+    "avatar": ""
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-24T16:15:40.155Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-24T16:15:40.155Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e1872120f79543799400a5"
+  },
+  "name": "Chiến dịch vCard - nguyễn văn A",
+  "description": "Thông tin cá nhân của nguyễn văn A",
+  "type": "vcard",
+  "content": {
+    "fullName": "nguyễn văn A",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "tây mỗ",
+    "website": "",
+    "avatar": ""
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-24T16:24:01.101Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-24T16:24:01.101Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e1875b20f79543799400a6"
+  },
+  "name": "Chiến dịch vCard - nguyễn văn B",
+  "description": "Thông tin cá nhân của nguyễn văn B",
+  "type": "vcard",
+  "content": {
+    "fullName": "nguyễn văn B",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "tây mỗ",
+    "website": "",
+    "avatar": ""
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-24T16:24:59.066Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-24T16:24:59.066Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e188b45c1c06ce1aeddc84"
+  },
+  "name": "Chiến dịch vCard - nguyễn văn c",
+  "description": "Thông tin cá nhân của nguyễn văn c",
+  "type": "vcard",
+  "content": {
+    "fullName": "nguyễn văn c",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "",
+    "website": "",
+    "avatar": ""
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-24T16:30:44.120Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-24T16:30:44.120Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e1899f4ced1783c9f2f2a4"
+  },
+  "name": "Chiến dịch vCard - Doan Van Giang",
+  "description": "Thông tin cá nhân của Doan Van Giang",
+  "type": "vcard",
+  "content": {
+    "fullName": "Doan Van Giang",
+    "phone": "0387409300",
+    "email": "doangiang665@gmail.com",
+    "address": "",
+    "website": "",
+    "avatar": ""
+  },
+  "status": "active",
+  "createdAt": {
+    "$date": "2025-03-24T16:34:39.556Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-24T16:34:39.556Z"
+  }
 }]

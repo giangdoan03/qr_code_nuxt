@@ -3,10 +3,18 @@ import { getDb } from '../../utils/db'
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
+        console.log('📦 Body nhận được:', JSON.stringify(body, null, 2))
 
-        const { name, type, content, description } = body
+        const {
+            name,
+            type,
+            description,
+            content,
+            avatar,
+            imageUrl,
+            logo
+        } = body
 
-        // Kiểm tra dữ liệu cơ bản
         if (!name || !type || !content) {
             return sendError(event, createError({
                 statusCode: 400,
@@ -14,16 +22,14 @@ export default defineEventHandler(async (event) => {
             }))
         }
 
-        // Validate theo loại type
         const validTypes = ['product', 'vcard', 'business']
         if (!validTypes.includes(type)) {
             return sendError(event, createError({
                 statusCode: 400,
-                statusMessage: 'Loại type không hợp lệ! Chỉ nhận: product, vcard, business.'
+                statusMessage: 'Loại type không hợp lệ!'
             }))
         }
 
-        // Xử lý validate theo từng loại campaign
         const validationError = validateContentByType(type, content)
         if (validationError) {
             return sendError(event, createError({
@@ -32,19 +38,58 @@ export default defineEventHandler(async (event) => {
             }))
         }
 
-        // Kết nối MongoDB
+        // Xử lý avatar riêng cho vCard
+        if (type === 'vcard') {
+            console.log('✅ Avatar nhận được:', avatar)
+
+            if (avatar && !isValidImageUrl(avatar)) {
+                return sendError(event, createError({
+                    statusCode: 400,
+                    statusMessage: 'Avatar không hợp lệ! (jpg/jpeg/png)'
+                }))
+            }
+
+            content.avatar = avatar || ''
+            console.log('✅ Content vCard:', content)
+        }
+
+        // Xử lý product image
+        if (type === 'product') {
+            if (imageUrl && !isValidImageUrl(imageUrl)) {
+                return sendError(event, createError({
+                    statusCode: 400,
+                    statusMessage: 'Ảnh sản phẩm không hợp lệ!'
+                }))
+            }
+
+            content.imageUrl = imageUrl || ''
+        }
+
+        // Xử lý logo doanh nghiệp
+        if (type === 'business') {
+            if (logo && !isValidImageUrl(logo)) {
+                return sendError(event, createError({
+                    statusCode: 400,
+                    statusMessage: 'Logo không hợp lệ!'
+                }))
+            }
+
+            content.logo = logo || ''
+        }
+
         const db = await getDb()
 
-        // Tạo object campaign
         const campaign = {
             name,
             description: description || '',
             type,
             content,
-            status: 'active',                // default status
+            status: 'active',
             createdAt: new Date(),
             updatedAt: new Date()
         }
+
+        console.log('✅ Campaign chuẩn bị insert:', JSON.stringify(campaign, null, 2))
 
         const result = await db.collection('campaigns').insertOne(campaign)
 
@@ -52,7 +97,7 @@ export default defineEventHandler(async (event) => {
             success: true,
             message: 'Tạo campaign thành công!',
             data: {
-                id: result.insertedId,
+                id: result.insertedId.toString(),
                 ...campaign
             }
         }
@@ -67,12 +112,6 @@ export default defineEventHandler(async (event) => {
     }
 })
 
-/**
- * Validate content theo type
- * @param {string} type
- * @param {object} content
- * @returns {string|null}
- */
 function validateContentByType(type, content) {
     if (typeof content !== 'object') {
         return 'Content phải là object!'
@@ -80,23 +119,20 @@ function validateContentByType(type, content) {
 
     switch (type) {
         case 'product':
-            if (!content.name || !content.price) {
-                return 'Thiếu thông tin product: name hoặc price!'
-            }
-            if (typeof content.price !== 'number') {
-                return 'Price của product phải là số!'
+            if (!content.productName || typeof content.price !== 'number') {
+                return 'Thiếu thông tin sản phẩm hoặc price không đúng định dạng!'
             }
             break
 
         case 'vcard':
             if (!content.fullName || !content.phone) {
-                return 'Thiếu thông tin vCard: fullName hoặc phone!'
+                return 'Thiếu thông tin vCard!'
             }
             break
 
         case 'business':
             if (!content.companyName || !content.address) {
-                return 'Thiếu thông tin business: companyName hoặc address!'
+                return 'Thiếu thông tin business!'
             }
             break
 
@@ -105,4 +141,8 @@ function validateContentByType(type, content) {
     }
 
     return null
+}
+
+function isValidImageUrl(url) {
+    return typeof url === 'string' && /\.(jpg|jpeg|png)$/i.test(url)
 }
