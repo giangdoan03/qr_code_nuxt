@@ -92,7 +92,7 @@
         <div class="w-full md:w-1/3 bg-white rounded shadow p-6 flex flex-col items-center">
             <h3 class="text-lg font-semibold mb-4">Preview Doanh Nghiệp</h3>
 
-            <div class="border rounded p-4 w-full max-w-xs text-center">
+            <div class="border rounded p-4 w-full max-w-xs">
                 <!-- Logo -->
                 <img
                     v-if="form.logo"

@@ -83,6 +83,15 @@
                     </div>
 
                     <div v-else-if="campaign.type === 'vcard'">
+                        <!-- Hiển thị avatar nếu có -->
+                        <div v-if="campaign.content.avatar" class="mb-3 flex justify-center">
+                            <img
+                                :src="campaign.content.avatar"
+                                alt="Avatar"
+                                class="w-24 h-24 rounded-full border object-cover"
+                            />
+                        </div>
+
                         <p>👤 {{ campaign.content.fullName }}</p>
                         <p>📞 {{ campaign.content.phone }}</p>
                         <p>✉️ {{ campaign.content.email }}</p>
@@ -97,8 +106,9 @@
                 </div>
             </div>
 
+
             <!-- Cột 3: QR Code + URL -->
-            <div class="w-full md:w-1/4 bg-white rounded shadow p-6 flex flex-col items-center">
+            <div class="w-full md:w-1/4 bg-white rounded shadow p-4 flex flex-col items-center">
                 <h3 class="text-lg font-semibold mb-4">🔗 URL & QR Code</h3>
 
                 <!-- URL Campaign -->
@@ -137,13 +147,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
-import { useNuxtApp } from '#app'
+import {ref, onMounted, nextTick} from 'vue'
+import {useRoute} from 'vue-router'
+import {useNuxtApp} from '#app'
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 const route = useRoute()
-const { $axios } = useNuxtApp()
+const {$axios} = useNuxtApp()
 
 const campaign = ref(null)
 const loading = ref(true)
@@ -173,7 +183,7 @@ const formatDate = (dateStr) => {
 // Định dạng giá tiền
 const formatCurrency = (number) => {
     if (!number) return '0 ₫'
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number)
+    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(number)
 }
 
 // Tải QR code

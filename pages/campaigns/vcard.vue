@@ -99,7 +99,7 @@
             <h3 class="text-lg font-semibold mb-4">📱 Preview vCard</h3>
 
             <div
-                class="border rounded p-4 w-full max-w-xs bg-gray-50 shadow-inner text-center"
+                class="border rounded p-4 w-full max-w-xs bg-gray-50 shadow-inner"
             >
                 <img
                     v-if="previewAvatar"

@@ -63,15 +63,23 @@
                             <td class="py-3 px-4 capitalize">{{ item.type }}</td>
 
                             <td class="py-3 px-4">
-                                <label class="inline-flex items-center cursor-pointer">
+                                <label class="switch-container">
                                     <input
                                         type="checkbox"
-                                        class="sr-only"
                                         :checked="item.status === 'active'"
                                         @change="toggleStatus(item)"
                                     />
-                                    <div :class="['w-11 h-6 rounded-full transition',item.status === 'active' ? 'bg-green-500' : 'bg-gray-300']"></div>
+                                    <span class="slider round"></span>
+
+                                    <!-- Chữ thay đổi nội dung và màu -->
+                                    <span
+                                        class="switch-label-text"
+                                        :class="item.status === 'active' ? 'text-green-600' : 'text-red-500'"
+                                    >
+                                    {{ item.status === 'active' ? 'Đang kích hoạt' : 'Đã hết hạn' }}
+                                  </span>
                                 </label>
+
                             </td>
 
                             <td class="py-3 px-4 text-center">{{ item.scanCount || 0 }}</td>
@@ -227,12 +235,13 @@ const deleteCampaign = async (id) => {
 const toggleStatus = async (item) => {
     const newStatus = item.status === 'active' ? 'inactive' : 'active'
     try {
-        await $axios.put(`/api/campaigns/${item._id}/status`, {status: newStatus})
+        await $axios.put(`/api/campaigns/${item._id}/status`, { status: newStatus })
         item.status = newStatus
     } catch (err) {
         console.error('❌ Cập nhật trạng thái thất bại:', err)
     }
 }
+
 
 // Export CSV
 const exportCSV = () => {
@@ -282,4 +291,69 @@ onMounted(() => {
 th, td {
     white-space: nowrap;
 }
+
+/* Nhỏ gọn hơn */
+/* Container label */
+.switch-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* khoảng cách giữa switch và chữ */
+    cursor: pointer;
+    min-width: 120px; /* nếu cần cố định độ rộng */
+}
+
+/* Ẩn input */
+.switch-container input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Switch cơ bản */
+.slider {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 22px;
+    background-color: #ccc;
+    border-radius: 9999px;
+    transition: background-color 0.3s;
+}
+
+/* Nút tròn */
+.slider::before {
+    content: "";
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+/* Khi bật */
+input:checked + .slider {
+    background-color: #10b981; /* xanh */
+}
+
+input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+/* Label chữ */
+.switch-label-text {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap; /* giữ chữ không xuống dòng */
+}
+
+.switch-label-text {
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+
 </style>

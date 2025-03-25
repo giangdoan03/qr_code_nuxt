@@ -28,11 +28,23 @@
             </div>
 
             <div v-else-if="campaign.type === 'vcard'" class="space-y-3">
+                <!-- Avatar nếu có -->
+                <div v-if="campaign.content.avatar" class="flex justify-center mb-4">
+                    <img
+                        :src="campaign.content.avatar"
+                        alt="Avatar"
+                        class="w-24 h-24 rounded-full object-cover border shadow"
+                        @error="e => e.target.src = '/default-avatar.png'"
+                    />
+
+                </div>
+
                 <h2 class="font-semibold text-lg mb-2">👤 Thông tin vCard</h2>
                 <p><strong>Họ tên:</strong> {{ campaign.content.fullName }}</p>
                 <p><strong>Điện thoại:</strong> {{ campaign.content.phone }}</p>
                 <p><strong>Email:</strong> {{ campaign.content.email }}</p>
                 <p><strong>Địa chỉ:</strong> {{ campaign.content.address }}</p>
+
                 <a
                     :href="campaign.content.website"
                     target="_blank"
@@ -41,7 +53,6 @@
                     Website
                 </a>
 
-                <!-- Tải vCard nếu muốn -->
                 <button
                     @click="downloadVCard"
                     class="block w-full mt-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
@@ -49,6 +60,7 @@
                     📥 Tải vCard
                 </button>
             </div>
+
 
             <div v-else-if="campaign.type === 'business'" class="space-y-3">
                 <h2 class="font-semibold text-lg mb-2">🏢 Thông tin Doanh nghiệp</h2>
