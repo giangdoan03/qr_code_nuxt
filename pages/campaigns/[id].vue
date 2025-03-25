@@ -11,7 +11,7 @@
         </div>
 
         <!-- Nội dung chính -->
-        <div v-else class="flex flex-col md:flex-row gap-6 max-w-12xl mx-auto">
+        <div v-else class="flex flex-col md:flex-row gap-6 max-w-12xl">
             <!-- Cột 1: Thông tin chi tiết -->
             <div class="flex-1 bg-white rounded shadow p-6">
                 <h2 class="text-2xl font-bold mb-4">📝 Chi tiết Campaign</h2>

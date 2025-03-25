@@ -10,8 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "@chenfengyuan/vue-qrcode": "^2.0.0",
     "@emotion/react": "^11.14.0",
+    "@vueuse/core": "^13.0.0",
     "ant-design-vue": "^4.0.0-rc.6",
     "axios": "^1.8.4",
     "babel-plugin-macros": "^3.1.0",

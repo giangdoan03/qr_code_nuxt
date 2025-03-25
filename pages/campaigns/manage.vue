@@ -76,7 +76,7 @@
                                         class="switch-label-text"
                                         :class="item.status === 'active' ? 'text-green-600' : 'text-red-500'"
                                     >
-                                    {{ item.status === 'active' ? 'Đang kích hoạt' : 'Đã hết hạn' }}
+                                    {{ item.status === 'active' ? 'Đang hoạt động' : 'Tạm dừng' }}
                                   </span>
                                 </label>
 
@@ -148,6 +148,7 @@
 <script setup>
 import {ref, reactive, onMounted, watch} from 'vue'
 import {useNuxtApp} from '#app'
+import { message } from 'ant-design-vue';
 
 definePageMeta({layout: 'default'})
 
@@ -237,8 +238,10 @@ const toggleStatus = async (item) => {
     try {
         await $axios.put(`/api/campaigns/${item._id}/status`, { status: newStatus })
         item.status = newStatus
+        message.success(`Đã chuyển trạng thái sang "${newStatus === 'active' ? 'Hoạt động' : 'Tạm dừng'}"`)
     } catch (err) {
         console.error('❌ Cập nhật trạng thái thất bại:', err)
+        message.error('❌ Không thể cập nhật trạng thái! Vui lòng thử lại.')
     }
 }
 
