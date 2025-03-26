@@ -1,305 +1,189 @@
 <template>
-    <div class="p-6 flex-1 bg-white rounded shadow">
-        <h2 class="text-2xl font-bold mb-6">👥 Quản lý Người dùng</h2>
-
+    <a-card title="👥 Quản lý người dùng">
         <!-- Bộ lọc -->
-        <div class="flex flex-wrap gap-4 mb-4 items-end">
-            <div>
-                <label class="block mb-1 text-sm font-medium">Quyền</label>
-                <select v-model="filters.role" class="border rounded px-2 py-2">
-                    <option value="">Tất cả</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                </select>
-            </div>
-            <div>
-                <label class="block mb-1 text-sm font-medium">Trạng thái</label>
-                <select v-model="filters.status" class="border rounded px-2 py-2">
-                    <option value="">Tất cả</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-            <div class="flex items-end gap-2">
-                <button @click="applyFilter" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    Lọc
-                </button>
-                <button @click="resetFilter" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
-                    Xóa lọc
-                </button>
-            </div>
-            <!-- Nút thêm user -->
-            <div class="flex items-end">
-                <button @click="openAddModal" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                    ➕ Thêm user
-                </button>
-            </div>
-        </div>
-        <!-- Bảng danh sách user -->
-        <div v-if="loading" class="text-center py-10">
-            Đang tải dữ liệu...
+        <div class="mb-4">
+            <a-space wrap>
+                <a-select v-model:value="filters.role" placeholder="Quyền" allow-clear style="width: 150px">
+                    <a-select-option value="admin">Admin</a-select-option>
+                    <a-select-option value="user">User</a-select-option>
+                </a-select>
+
+                <a-select v-model:value="filters.status" placeholder="Trạng thái" allow-clear style="width: 150px">
+                    <a-select-option value="active">Active</a-select-option>
+                    <a-select-option value="inactive">Inactive</a-select-option>
+                </a-select>
+
+                <a-button type="primary" @click="applyFilter">Lọc</a-button>
+                <a-button @click="resetFilter">Xóa lọc</a-button>
+                <a-button type="success" @click="openAddModal">+ Thêm user</a-button>
+            </a-space>
         </div>
 
-        <div v-else class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded shadow text-sm">
-                <thead>
-                <tr class="bg-gray-100">
-                    <th class="py-3 px-4 text-left">Tên</th>
-                    <th class="py-3 px-4 text-left">Email</th>
-                    <th class="py-3 px-4 text-left">Quyền</th>
-                    <th class="py-3 px-4 text-left">Trạng thái</th>
-                    <th class="py-3 px-4 text-left">Đăng nhập cuối</th>
-                    <th class="py-3 px-4 text-left">Ngày tạo</th>
-                    <th class="py-3 px-4 text-center">Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="user in users" :key="user._id" class="border-t">
-                    <td class="py-3 px-4">{{ user.name }}</td>
-                    <td class="py-3 px-4">{{ user.email }}</td>
-                    <td class="py-3 px-4 capitalize">{{ user.role }}</td>
-                    <td class="py-3 px-4">
-                          <span :class="user.status === 'active' ? 'text-green-600' : 'text-red-600'">
-                            {{ user.status }}
-                          </span>
-                    </td>
-                    <td class="py-3 px-4">{{ formatDate(user.lastLogin) }}</td>
-                    <td class="py-3 px-4">{{ formatDate(user.createdAt) }}</td>
-                    <td class="py-3 px-4 text-center space-x-3">
-                        <button @click="openEditModal(user)" class="hover:text-yellow-600 text-lg">✏️</button>
-                        <button @click="deleteUser(user._id)" class="hover:text-red-600 text-lg">🗑️</button>
-                        <button @click="toggleStatus(user)" class="hover:text-blue-600 text-lg">
-                            {{ user.status === 'active' ? '⏸️' : '✅' }}
-                        </button>
-                        <button @click="viewHistory(user)" class="hover:text-purple-600 text-lg">📜</button>
-                    </td>
+        <a-table
+            :columns="columns"
+            :data-source="users"
+            :loading="loading"
+            :pagination="false"
+            rowKey="_id"
+            bordered
+        >
+            <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'status'">
+                    <a-tag :color="record.status === 'active' ? 'green' : 'red'">
+                        {{ record.status }}
+                    </a-tag>
+                </template>
 
-                </tr>
-                </tbody>
-            </table>
+                <template v-if="column.key === 'actions'">
+                    <a-space>
+                        <a @click="openEditModal(record)">✏️</a>
+                        <a @click="deleteUser(record._id)" class="text-red-600">🗑️</a>
+                        <a @click="toggleStatus(record)">{{ record.status === 'active' ? '⏸️' : '✅' }}</a>
+                        <a @click="viewHistory(record)">📜</a>
+                    </a-space>
+                </template>
 
-            <!-- Pagination -->
-            <div class="flex justify-between items-center mt-4">
-                <button @click="prevPage" :disabled="page === 1"
-                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">
-                    Trang trước
-                </button>
-                <span>Trang {{ page }}</span>
-                <button @click="nextPage" :disabled="!hasMore"
-                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">
-                    Trang sau
-                </button>
-            </div>
-        </div>
+                <template v-if="column.key === 'lastLogin' || column.key === 'createdAt'">
+                    {{ formatDate(record[column.key]) }}
+                </template>
+            </template>
+        </a-table>
 
-        <!-- Modal thêm/sửa user -->
-        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded shadow w-full max-w-md relative">
-                <button @click="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-black">✖️</button>
-                <h3 class="text-lg font-semibold mb-4">{{ editMode ? 'Sửa' : 'Thêm' }} User</h3>
+        <a-pagination
+            class="mt-4 text-center"
+            :current="page"
+            :total="total"
+            :page-size="limit"
+            show-less-items
+            @change="(p) => { page = p; fetchUsers() }"
+        />
 
-                <form @submit.prevent="saveUser" class="space-y-4">
-                    <input v-model="modalForm.name" placeholder="Tên" class="w-full p-2 border rounded" required/>
-                    <input v-model="modalForm.email" placeholder="Email" class="w-full p-2 border rounded" required/>
-                    <select v-model="modalForm.role" class="w-full p-2 border rounded">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <select v-model="modalForm.status" class="w-full p-2 border rounded">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+        <!-- Modal Thêm/Sửa -->
+        <a-modal v-model:open="showModal" :title="editMode ? 'Sửa user' : 'Thêm user'" @ok="saveUser" ok-text="Lưu">
+            <a-form layout="vertical">
+                <a-form-item label="Tên">
+                    <a-input v-model:value="modalForm.name" required />
+                </a-form-item>
+                <a-form-item label="Email">
+                    <a-input v-model:value="modalForm.email" required />
+                </a-form-item>
+                <a-form-item label="Quyền">
+                    <a-select v-model:value="modalForm.role">
+                        <a-select-option value="user">User</a-select-option>
+                        <a-select-option value="admin">Admin</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="Trạng thái">
+                    <a-select v-model:value="modalForm.status">
+                        <a-select-option value="active">Active</a-select-option>
+                        <a-select-option value="inactive">Inactive</a-select-option>
+                    </a-select>
+                </a-form-item>
+            </a-form>
+        </a-modal>
 
-                    <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-                        Lưu
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal lịch sử login -->
-        <div v-if="showHistory" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded shadow w-full max-w-lg relative">
-                <button @click="closeHistory" class="absolute top-2 right-2 text-gray-500 hover:text-black">✖️</button>
-                <h3 class="text-lg font-semibold mb-4">Lịch sử đăng nhập</h3>
-                <ul class="space-y-2">
-                    <li v-for="(log, idx) in selectedHistory" :key="idx" class="border p-2 rounded text-sm">
-                        🕒 {{ formatDate(log.date) }} - IP: {{ log.ip }}
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+        <!-- Modal Lịch sử ĐN -->
+        <a-modal v-model:open="showHistory" title="Lịch sử đăng nhập" footer={null}>
+            <a-list :data-source="selectedHistory" bordered size="small">
+                <template #renderItem="item">
+                    <a-list-item>🕒 {{ formatDate(item.date) }} - IP: {{ item.ip }}</a-list-item>
+                </template>
+            </a-list>
+        </a-modal>
+    </a-card>
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from 'vue'
-import {useNuxtApp} from '#app'
-import {message} from 'ant-design-vue'
+import { ref, reactive, onMounted } from 'vue'
+import { useNuxtApp } from '#app'
+import { message } from 'ant-design-vue'
 
-definePageMeta({
-    layout: 'default'
-})
-
-const {$axios} = useNuxtApp()
+const { $axios } = useNuxtApp()
 
 const users = ref([])
 const loading = ref(false)
 const page = ref(1)
 const limit = 10
-const hasMore = ref(false)
+const total = ref(0)
 
-const filters = reactive({
-    role: '',
-    status: ''
-})
+const filters = reactive({ role: '', status: '' })
 
 const showModal = ref(false)
 const editMode = ref(false)
-const modalForm = reactive({
-    _id: '',
-    name: '',
-    email: '',
-    role: 'user',
-    status: 'active'
-})
+const modalForm = reactive({ _id: '', name: '', email: '', role: 'user', status: 'active' })
 
 const showHistory = ref(false)
 const selectedHistory = ref([])
 
-// Fetch users
+const columns = [
+    { title: 'Tên', dataIndex: 'name', key: 'name' },
+    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { title: 'Quyền', dataIndex: 'role', key: 'role' },
+    { title: 'Trạng thái', key: 'status' },
+    { title: 'Đăng nhập cuối', key: 'lastLogin' },
+    { title: 'Ngày tạo', key: 'createdAt' },
+    { title: 'Hành động', key: 'actions' }
+]
+
 const fetchUsers = async () => {
     loading.value = true
     try {
         const res = await $axios.get('/api/users', {
-            params: {
-                page: page.value,
-                limit,
-                ...filters
-            }
+            params: { page: page.value, limit, ...filters }
         })
-
         users.value = res.data.data
-        hasMore.value = page.value * limit < res.data.pagination.total
+        total.value = res.data.pagination.total
     } catch (err) {
-        console.error('❌ Lỗi fetch users:', err)
+        message.error('Lỗi tải dữ liệu')
     } finally {
         loading.value = false
     }
 }
 
-const applyFilter = () => {
-    page.value = 1
-    fetchUsers()
-}
-
-const resetFilter = () => {
-    filters.role = ''
-    filters.status = ''
-    page.value = 1
-    fetchUsers()
-}
-
-const nextPage = () => {
-    if (hasMore.value) {
-        page.value++
-        fetchUsers()
-    }
-}
-
-const prevPage = () => {
-    if (page.value > 1) {
-        page.value--
-        fetchUsers()
-    }
-}
-
-const openAddModal = () => {
-    editMode.value = false
-    Object.assign(modalForm, {
-        _id: '',
-        name: '',
-        email: '',
-        role: 'user',
-        status: 'active'
-    })
-    showModal.value = true
-}
-
-const openEditModal = (user) => {
-    editMode.value = true
-    Object.assign(modalForm, {...user})
-    showModal.value = true
-}
-
-const closeModal = () => {
-    showModal.value = false
-}
-
+const applyFilter = () => { page.value = 1; fetchUsers() }
+const resetFilter = () => { filters.role = ''; filters.status = ''; applyFilter() }
+const openAddModal = () => { editMode.value = false; Object.assign(modalForm, { _id: '', name: '', email: '', role: 'user', status: 'active' }); showModal.value = true }
+const openEditModal = (user) => { editMode.value = true; Object.assign(modalForm, { ...user }); showModal.value = true }
 const saveUser = async () => {
     try {
-        if (editMode.value) {
-            await $axios.put(`/api/users/${modalForm._id}`, modalForm)
-            message.success('Cập nhật user thành công!')
-        } else {
-            await $axios.post('/api/users', modalForm)
-            message.success('Thêm user thành công!')
-        }
-        fetchUsers()
-        closeModal()
+        if (editMode.value) await $axios.put(`/api/users/${modalForm._id}`, modalForm)
+        else await $axios.post('/api/users', modalForm)
+        message.success(editMode.value ? 'Cập nhật user thành công' : 'Thêm user thành công')
+        fetchUsers(); showModal.value = false
     } catch (err) {
-        console.error('❌ Lỗi lưu user:', err)
-        message.error('Lỗi lưu user!')
+        message.error('Lỗi khi lưu user')
     }
 }
-
 const deleteUser = async (id) => {
-    if (!confirm('Bạn có chắc muốn xoá user này không?')) return
     try {
         await $axios.delete(`/api/users/${id}`)
-        message.success('Xoá user thành công!')
+        message.success('Xóa user thành công')
         fetchUsers()
     } catch (err) {
-        console.error('❌ Lỗi xoá user:', err)
-        message.error('Lỗi xoá user!')
+        message.error('Lỗi khi xóa user')
     }
 }
-
 const toggleStatus = async (user) => {
     const newStatus = user.status === 'active' ? 'inactive' : 'active'
     try {
-        await $axios.put(`/api/users/${user._id}/status`, {status: newStatus})
-        message.success(`Đã cập nhật trạng thái user!`)
+        await $axios.put(`/api/users/${user._id}/status`, { status: newStatus })
+        message.success('Cập nhật trạng thái thành công')
         fetchUsers()
     } catch (err) {
-        console.error('❌ Lỗi cập nhật status:', err)
-        message.error('Lỗi cập nhật trạng thái!')
+        message.error('Lỗi trạng thái')
     }
 }
-
 const viewHistory = (user) => {
     selectedHistory.value = user.loginHistory || []
     showHistory.value = true
 }
-
-const closeHistory = () => {
-    showHistory.value = false
-}
-
 const formatDate = (dateStr) => {
     if (!dateStr) return '-'
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('vi-VN')
+    return new Date(dateStr).toLocaleDateString('vi-VN')
 }
-
-onMounted(() => {
-    fetchUsers()
-})
+onMounted(fetchUsers)
 </script>
 
 <style scoped>
-th,
-td {
-    white-space: nowrap;
-}
+.mt-4 { margin-top: 1rem; }
 </style>

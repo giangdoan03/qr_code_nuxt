@@ -1,125 +1,139 @@
 <template>
-    <div class="bg-white rounded shadow w-full p-6">
-        <div v-if="loading" class="text-center py-10">Đang tải dữ liệu...</div>
+    <div class="min-h-screen bg-gray-100 p-6">
+        <a-spin :spinning="loading">
+            <a-row gutter="24">
+                <!-- Cột 1: Form chỉnh sửa -->
+                <a-col :xs="24" :md="12" :lg="14">
+                    <a-card title="✏️ Chỉnh sửa Campaign">
+                        <a-form layout="vertical" @submit.prevent="updateCampaign">
+                            <a-form-item label="Tên campaign">
+                                <a-input v-model:value="form.name" placeholder="Tên campaign" required />
+                            </a-form-item>
 
-        <div v-else-if="!campaign" class="text-center py-10">Không tìm thấy campaign!</div>
+                            <a-form-item label="Mô tả">
+                                <a-textarea v-model:value="form.description" rows="3" placeholder="Mô tả" />
+                            </a-form-item>
 
-        <div v-else class="flex flex-col md:flex-row gap-6">
-            <!-- Cột 1: Form chỉnh sửa -->
-            <div class="flex-1 bg-white rounded shadow p-4">
-                <h2 class="text-2xl font-bold mb-4">✏️ Chỉnh sửa Campaign</h2>
+                            <a-form-item label="Trạng thái">
+                                <a-select v-model:value="form.status">
+                                    <a-select-option value="active">Hoạt động</a-select-option>
+                                    <a-select-option value="inactive">Tạm dừng</a-select-option>
+                                </a-select>
+                            </a-form-item>
 
-                <form @submit.prevent="updateCampaign" class="space-y-4">
-                    <!-- Tên campaign -->
-                    <input
-                        v-model="form.name"
-                        placeholder="Tên campaign"
-                        class="border p-2 rounded w-full"
-                        required
-                    />
+                            <template v-if="form.type === 'product'">
+                                <a-divider>Thông tin sản phẩm</a-divider>
+                                <a-form-item label="Tên sản phẩm">
+                                    <a-input v-model:value="form.content.name" required />
+                                </a-form-item>
+                                <a-form-item label="Giá">
+                                    <a-input-number v-model:value="form.content.price" class="w-full" />
+                                </a-form-item>
+                                <a-form-item label="Link sản phẩm">
+                                    <a-input v-model:value="form.content.link" />
+                                </a-form-item>
+                            </template>
 
-                    <!-- Mô tả -->
-                    <textarea
-                        v-model="form.description"
-                        placeholder="Mô tả"
-                        class="border p-2 rounded w-full"
-                    ></textarea>
+                            <template v-else-if="form.type === 'vcard'">
+                                <a-divider>Thông tin vCard</a-divider>
+                                <a-form-item label="Họ tên">
+                                    <a-input v-model:value="form.content.fullName" required />
+                                </a-form-item>
+                                <a-form-item label="Số điện thoại">
+                                    <a-input v-model:value="form.content.phone" required />
+                                </a-form-item>
+                                <a-form-item label="Email">
+                                    <a-input v-model:value="form.content.email" />
+                                </a-form-item>
+                                <a-form-item label="Địa chỉ">
+                                    <a-input v-model:value="form.content.address" />
+                                </a-form-item>
+                                <a-form-item label="Website">
+                                    <a-input v-model:value="form.content.website" />
+                                </a-form-item>
+                            </template>
 
-                    <!-- Trạng thái -->
-                    <select v-model="form.status" class="border rounded px-2 py-2 w-full">
-                        <option value="active">Hoạt động</option>
-                        <option value="inactive">Tạm dừng</option>
-                    </select>
+                            <template v-else-if="form.type === 'business'">
+                                <a-divider>Thông tin doanh nghiệp</a-divider>
+                                <a-form-item label="Tên công ty">
+                                    <a-input v-model:value="form.content.companyName" required />
+                                </a-form-item>
+                                <a-form-item label="Địa chỉ">
+                                    <a-input v-model:value="form.content.address" required />
+                                </a-form-item>
+                                <a-form-item label="Số điện thoại">
+                                    <a-input v-model:value="form.content.phone" />
+                                </a-form-item>
+                                <a-form-item label="Email">
+                                    <a-input v-model:value="form.content.email" />
+                                </a-form-item>
+                                <a-form-item label="Website">
+                                    <a-input v-model:value="form.content.website" />
+                                </a-form-item>
+                                <a-form-item label="Mã số thuế">
+                                    <a-input v-model:value="form.content.taxCode" />
+                                </a-form-item>
+                            </template>
 
-                    <!-- Nội dung content tùy loại -->
-                    <div v-if="form.type === 'product'" class="space-y-2">
-                        <input v-model="form.content.name" placeholder="Tên sản phẩm" class="border p-2 rounded w-full" required />
-                        <input v-model.number="form.content.price" placeholder="Giá sản phẩm" class="border p-2 rounded w-full" required />
-                        <input v-model="form.content.link" placeholder="Link sản phẩm" class="border p-2 rounded w-full" />
-                    </div>
+                            <a-button type="primary" html-type="submit" block :loading="updating">
+                                {{ updating ? 'Đang cập nhật...' : 'Cập nhật Campaign' }}
+                            </a-button>
+                        </a-form>
+                    </a-card>
+                </a-col>
 
-                    <div v-else-if="form.type === 'vcard'" class="space-y-2">
-                        <input v-model="form.content.fullName" placeholder="Họ tên" class="border p-2 rounded w-full" required />
-                        <input v-model="form.content.phone" placeholder="Số điện thoại" class="border p-2 rounded w-full" required />
-                        <input v-model="form.content.email" placeholder="Email" class="border p-2 rounded w-full" />
-                        <input v-model="form.content.address" placeholder="Địa chỉ" class="border p-2 rounded w-full" />
-                        <input v-model="form.content.website" placeholder="Website" class="border p-2 rounded w-full" />
-                    </div>
+                <!-- Cột 2: Preview + QR -->
+                <a-col :xs="24" :md="12" :lg="10">
+                    <a-card title="📱 Preview & QR">
+                        <div class="mb-4">
+                            <h3 class="text-base font-semibold mb-2">Thông tin:</h3>
+                            <p><strong>{{ form.name }}</strong></p>
+                            <p class="text-sm text-gray-500">{{ form.description }}</p>
+                        </div>
 
-                    <div v-else-if="form.type === 'business'" class="space-y-2">
-                        <input v-model="form.content.companyName" placeholder="Tên công ty" class="border p-2 rounded w-full" required />
-                        <input v-model="form.content.address" placeholder="Địa chỉ" class="border p-2 rounded w-full" required />
-                        <input v-model="form.content.phone" placeholder="Số điện thoại" class="border p-2 rounded w-full" />
-                        <input v-model="form.content.email" placeholder="Email" class="border p-2 rounded w-full" />
-                        <input v-model="form.content.website" placeholder="Website" class="border p-2 rounded w-full" />
-                        <input v-model="form.content.taxCode" placeholder="Mã số thuế" class="border p-2 rounded w-full" />
-                    </div>
+                        <template v-if="form.type === 'product'">
+                            <p>🛒 {{ form.content.name }}</p>
+                            <p>💰 {{ formatCurrency(form.content.price) }}</p>
+                            <a :href="form.content.link" target="_blank" class="text-blue-500 underline text-sm">🔗 Link sản phẩm</a>
+                        </template>
 
-                    <!-- Nút cập nhật -->
-                    <button
-                        type="submit"
-                        :disabled="updating"
-                        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
-                    >
-                        {{ updating ? "Đang cập nhật..." : "Cập nhật Campaign" }}
-                    </button>
-                </form>
-            </div>
+                        <template v-else-if="form.type === 'vcard'">
+                            <p>👤 {{ form.content.fullName }}</p>
+                            <p>📞 {{ form.content.phone }}</p>
+                            <p>✉️ {{ form.content.email }}</p>
+                            <p>🏠 {{ form.content.address }}</p>
+                        </template>
 
-            <!-- Cột 2: Preview mobile -->
-            <div class="w-full md:w-1/3 bg-white rounded shadow p-4 flex flex-col items-center">
-                <h3 class="text-lg font-semibold mb-4">📱 Preview Mobile</h3>
+                        <template v-else-if="form.type === 'business'">
+                            <p>🏢 {{ form.content.companyName }}</p>
+                            <p>📍 {{ form.content.address }}</p>
+                            <p>📞 {{ form.content.phone }}</p>
+                        </template>
 
-                <div class="border rounded-lg p-4 w-full max-w-xl bg-gray-50 shadow-inner">
-                    <p class="font-bold text-lg mb-2">{{ form.name }}</p>
+                        <div class="mt-6" v-if="campaign && campaign.url">
+                            <p class="text-sm text-gray-500 mb-2">URL Campaign:</p>
+                            <a :href="campaign.url" target="_blank" class="text-blue-600 hover:underline break-all">
+                                {{ campaign.url }}
+                            </a>
+                        </div>
 
-                    <div v-if="form.type === 'product'">
-                        <p class="text-sm text-gray-600 mb-1">🛒 {{ form.content.name }}</p>
-                        <p class="text-sm text-gray-600 mb-1">💰 {{ formatCurrency(form.content.price) }}</p>
-                        <a :href="form.content.link" target="_blank" class="block text-sm text-blue-500 underline">🔗 Link sản phẩm</a>
-                    </div>
+                        <client-only>
+                            <VueQrcode
+                                v-if="campaign && campaign.url"
+                                ref="qrRef"
+                                :value="campaign.url"
+                                :options="{ width: 180 }"
+                                class="mx-auto my-4"
+                            />
+                        </client-only>
 
-                    <div v-else-if="form.type === 'vcard'">
-                        <p class="text-sm text-gray-600 mb-1">👤 {{ form.content.fullName }}</p>
-                        <p class="text-sm text-gray-600 mb-1">📞 {{ form.content.phone }}</p>
-                        <p class="text-sm text-gray-600 mb-1">✉️ {{ form.content.email }}</p>
-                        <p class="text-sm text-gray-600 mb-1">🏠 {{ form.content.address }}</p>
-                    </div>
-
-                    <div v-else-if="form.type === 'business'">
-                        <p class="text-sm text-gray-600 mb-1">🏢 {{ form.content.companyName }}</p>
-                        <p class="text-sm text-gray-600 mb-1">📍 {{ form.content.address }}</p>
-                        <p class="text-sm text-gray-600 mb-1">📞 {{ form.content.phone }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Cột 3: QR Code & URL -->
-            <div class="w-full md:w-1/4 bg-white rounded shadow p-4 flex flex-col items-center justify-start">
-                <h3 class="text-lg font-semibold mb-4">🔗 URL & QR Code</h3>
-
-                <div class="text-center mb-4">
-                    <p class="text-sm">URL Campaign:</p>
-                    <a :href="campaign.url" target="_blank" class="text-blue-600 hover:underline break-all">{{ campaign.url }}</a>
-                </div>
-
-                <!-- QR Code component -->
-                <VueQrcode
-                    ref="qrRef"
-                    :value="campaign.url"
-                    :options="{ width: 200 }"
-                    class="mx-auto mb-4"
-                />
-
-                <!-- Nút tải QR code -->
-                <button
-                    @click="downloadQR"
-                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm"
-                >
-                    📥 Tải QR Code
-                </button>
-            </div>
-        </div>
+                        <a-button block type="dashed" @click="downloadQR">
+                            📥 Tải QR Code
+                        </a-button>
+                    </a-card>
+                </a-col>
+            </a-row>
+        </a-spin>
     </div>
 </template>
 
@@ -154,7 +168,6 @@ const fetchCampaignDetail = async () => {
         const res = await $axios.get(`/api/campaigns/${route.params.id}`)
         campaign.value = res.data.data
 
-        // Gán vào form để chỉnh sửa
         Object.assign(form, {
             name: campaign.value.name,
             description: campaign.value.description,
@@ -206,14 +219,13 @@ const downloadQR = () => {
     const dataUrl = canvas.toDataURL('image/png')
     const link = document.createElement('a')
     link.href = dataUrl
-    link.download = `${campaign.value.name || 'qr-code'}.png`
+    link.download = `${campaign.value?.name || 'qr-code'}.png`
     link.click()
 }
 
-onMounted(() => {
-    fetchCampaignDetail()
-})
+onMounted(fetchCampaignDetail)
 </script>
+
 
 <style scoped>
 textarea {

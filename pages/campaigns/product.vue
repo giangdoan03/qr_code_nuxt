@@ -131,7 +131,7 @@ const { $axios } = useNuxtApp()
 const form = ref({
     productName: '',
     price: '',
-    link: '',
+    link: 'https://shopee.vn/',
     description: '',
     imageUrl: ''
 })

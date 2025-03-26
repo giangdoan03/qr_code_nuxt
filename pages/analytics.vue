@@ -1,65 +1,68 @@
 <template>
-    <div class="">
+    <div>
         <h2 class="text-2xl font-bold mb-6">📈 Thống kê Analytics</h2>
 
-        <!-- Bộ lọc thời gian -->
-        <div class="flex gap-4 mb-6 flex-wrap">
-            <div>
-                <label class="block text-sm font-medium mb-1">Từ ngày</label>
-                <input v-model="filters.startDate" type="date" class="border px-2 py-2 rounded"/>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-1">Đến ngày</label>
-                <input v-model="filters.endDate" type="date" class="border px-2 py-2 rounded"/>
-            </div>
-
-            <div class="flex items-end">
-                <button @click="fetchAnalytics" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Lọc
-                </button>
-            </div>
-        </div>
+        <!-- Bộ lọc -->
+        <a-card class="mb-6">
+            <a-row gutter="16" align="bottom">
+                <a-col :xs="24" :sm="12" :md="8">
+                    <a-form-item label="Khoảng thời gian">
+                        <a-range-picker v-model:value="dateRange" format="YYYY-MM-DD" />
+                    </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="12" :md="4">
+                    <a-button type="primary" @click="fetchAnalytics">Lọc</a-button>
+                </a-col>
+            </a-row>
+        </a-card>
 
         <!-- Tổng quan -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white p-6 rounded shadow text-center">
-                <h3 class="text-lg font-semibold">Tổng lượt quét</h3>
-                <p class="text-3xl font-bold text-blue-600">{{ summary.totalScans }}</p>
-            </div>
-            <div class="bg-white p-6 rounded shadow text-center">
-                <h3 class="text-lg font-semibold">Lượt quét hôm nay</h3>
-                <p class="text-3xl font-bold text-green-600">{{ summary.todayScans }}</p>
-            </div>
-            <div class="bg-white p-6 rounded shadow text-center">
-                <h3 class="text-lg font-semibold">Campaign hoạt động</h3>
-                <p class="text-3xl font-bold text-purple-600">{{ summary.activeCampaigns }}</p>
-            </div>
-            <div class="bg-white p-6 rounded shadow text-center">
-                <h3 class="text-lg font-semibold">Người dùng mới</h3>
-                <p class="text-3xl font-bold text-orange-600">{{ summary.newUsers }}</p>
-            </div>
-        </div>
+        <a-row gutter="16" class="mb-6">
+            <a-col :xs="24" :sm="12" :md="6">
+                <a-card>
+                    <p class="text-sm text-gray-500">Tổng lượt quét</p>
+                    <p class="text-3xl font-bold text-blue-600">{{ summary.totalScans }}</p>
+                </a-card>
+            </a-col>
+            <a-col :xs="24" :sm="12" :md="6">
+                <a-card>
+                    <p class="text-sm text-gray-500">Lượt quét hôm nay</p>
+                    <p class="text-3xl font-bold text-green-600">{{ summary.todayScans }}</p>
+                </a-card>
+            </a-col>
+            <a-col :xs="24" :sm="12" :md="6">
+                <a-card>
+                    <p class="text-sm text-gray-500">Campaign hoạt động</p>
+                    <p class="text-3xl font-bold text-purple-600">{{ summary.activeCampaigns }}</p>
+                </a-card>
+            </a-col>
+            <a-col :xs="24" :sm="12" :md="6">
+                <a-card>
+                    <p class="text-sm text-gray-500">Người dùng mới</p>
+                    <p class="text-3xl font-bold text-orange-600">{{ summary.newUsers }}</p>
+                </a-card>
+            </a-col>
+        </a-row>
 
         <!-- Biểu đồ -->
-        <div class="bg-white p-6 rounded shadow">
-            <h3 class="text-lg font-semibold mb-4">Biểu đồ lượt quét hàng ngày</h3>
-            <canvas ref="chartCanvas" height="100"></canvas>
-        </div>
+        <a-card title="📊 Biểu đồ lượt quét theo ngày">
+            <div style="height: 300px">
+                <canvas ref="chartCanvas"></canvas>
+            </div>
+        </a-card>
     </div>
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, watch} from 'vue'
-import {useNuxtApp} from '#app'
+import { ref, reactive, onMounted, watch } from 'vue'
+import { useNuxtApp } from '#app'
+import dayjs from 'dayjs'
 import Chart from 'chart.js/auto'
 
-definePageMeta({
-    layout: 'default'
-})
+definePageMeta({ layout: 'default' })
 
-const {$axios} = useNuxtApp()
+const { $axios } = useNuxtApp()
 
-// Dữ liệu
 const summary = reactive({
     totalScans: 0,
     todayScans: 0,
@@ -67,26 +70,23 @@ const summary = reactive({
     newUsers: 0
 })
 
-const chartData = ref([])
+const dateRange = ref([dayjs().subtract(7, 'day'), dayjs()])
+
 const chartCanvas = ref(null)
+const chartData = ref([])
 let chartInstance = null
 
-const filters = reactive({
-    startDate: '',
-    endDate: ''
-})
-
-// Lấy dữ liệu Analytics
 const fetchAnalytics = async () => {
     try {
+        const [start, end] = dateRange.value || []
         const res = await $axios.get('/api/analytics', {
             params: {
-                startDate: filters.startDate,
-                endDate: filters.endDate
+                startDate: start?.format('YYYY-MM-DD'),
+                endDate: end?.format('YYYY-MM-DD')
             }
         })
 
-        const {summary: s, dailyStats} = res.data
+        const { summary: s, dailyStats } = res.data
 
         summary.totalScans = s.totalScans
         summary.todayScans = s.todayScans
@@ -100,13 +100,9 @@ const fetchAnalytics = async () => {
     }
 }
 
-// Vẽ biểu đồ
 const renderChart = () => {
     if (!chartCanvas.value) return
-
-    if (chartInstance) {
-        chartInstance.destroy()
-    }
+    if (chartInstance) chartInstance.destroy()
 
     const labels = chartData.value.map(item => item.date)
     const data = chartData.value.map(item => item.scans)
@@ -118,10 +114,10 @@ const renderChart = () => {
             datasets: [{
                 label: 'Lượt quét',
                 data,
+                borderColor: '#1890ff',
+                backgroundColor: 'rgba(24,144,255,0.1)',
                 fill: true,
-                borderColor: 'rgba(59, 130, 246, 1)',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                tension: 0.4
+                tension: 0.3
             }]
         },
         options: {
@@ -137,8 +133,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-canvas {
-    width: 100% !important;
-    height: 300px !important;
+.text-3xl {
+    font-size: 1.875rem;
 }
 </style>

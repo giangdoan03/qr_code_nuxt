@@ -1,197 +1,47 @@
-<template>
-    <div class="bg-white rounded shadow w-full">
-        <div class="p-4">
-            <h2 class="text-2xl font-bold mb-4">📋 Quản lý QR code</h2>
-
-            <!-- Bộ lọc -->
-            <div class="flex flex-wrap gap-4 mb-6">
-                <div>
-                    <label class="block mb-1 text-sm font-medium">Loại QR code</label>
-                    <select v-model="filters.type" class="border rounded px-2 py-2">
-                        <option value="">Tất cả</option>
-                        <option value="vcard">👤 vCard</option>
-                        <option value="product">📦 Sản phẩm</option>
-                        <option value="business">🏢 Doanh nghiệp</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block mb-1 text-sm font-medium">Trạng thái</label>
-                    <select v-model="filters.status" class="border rounded px-2 py-2">
-                        <option value="">Tất cả</option>
-                        <option value="active">Hoạt động</option>
-                        <option value="inactive">Tạm dừng</option>
-                    </select>
-                </div>
-
-                <div class="flex items-end gap-2">
-                    <button @click="applyFilter" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Lọc
-                    </button>
-                    <button @click="resetFilter" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Xóa
-                        lọc
-                    </button>
-                    <button @click="exportCSV" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">📤
-                        Xuất CSV
-                    </button>
-                </div>
-            </div>
-
-            <!-- Danh sách Campaigns -->
-            <div v-if="loading" class="text-center py-10">Đang tải dữ liệu...</div>
-
-            <div v-else>
-                <div v-if="campaigns.length === 0" class="text-center py-10">
-                    <p>Không tìm thấy campaign nào!</p>
-                </div>
-
-                <div v-else class="overflow-x-auto">
-                    <table class="min-w-full bg-white rounded shadow">
-                        <thead>
-                        <tr class="bg-gray-100">
-                            <th class="py-3 px-4 text-left">Tên Campaign</th>
-                            <th class="py-3 px-4 text-left">Loại</th>
-                            <th class="py-3 px-4 text-left">Trạng thái</th>
-                            <th class="py-3 px-4 text-left">Số lượt quét</th>
-                            <th class="py-3 px-4 text-left">Ngày tạo</th>
-                            <th class="py-3 px-4 text-center">Hành động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="item in campaigns" :key="item._id" class="border-t">
-                            <td class="py-3 px-4">{{ item.name }}</td>
-                            <td class="py-3 px-4 capitalize">{{ item.type }}</td>
-
-                            <td class="py-3 px-4">
-                                <label class="switch-container">
-                                    <input
-                                        type="checkbox"
-                                        :checked="item.status === 'active'"
-                                        @change="toggleStatus(item)"
-                                    />
-                                    <span class="slider round"></span>
-
-                                    <!-- Chữ thay đổi nội dung và màu -->
-                                    <span
-                                        class="switch-label-text"
-                                        :class="item.status === 'active' ? 'text-green-600' : 'text-red-500'"
-                                    >
-                                    {{ item.status === 'active' ? 'Đang hoạt động' : 'Tạm dừng' }}
-                                  </span>
-                                </label>
-
-                            </td>
-
-                            <td class="py-3 px-4 text-center">{{ item.scanCount || 0 }}</td>
-                            <td class="py-3 px-4">{{ formatDate(item.createdAt) }}</td>
-
-                            <td class="py-3 px-4 text-center space-x-2">
-                                <!-- Xem chi tiết campaign -->
-                                <NuxtLink
-                                    :to="`/campaigns/${item._id}`"
-                                    class="text-blue-600 text-lg hover:underline"
-                                    title="Xem chi tiết campaign"
-                                >
-                                    👁️
-                                </NuxtLink>
-
-                                <!-- Sửa campaign -->
-                                <NuxtLink
-                                    :to="`/campaigns/edit/${item._id}`"
-                                    class="text-yellow-600 text-lg hover:underline"
-                                    title="Chỉnh sửa campaign"
-                                >
-                                    ✏️
-                                </NuxtLink>
-
-                                <!-- Xóa campaign -->
-                                <button
-                                    @click="deleteCampaign(item._id)"
-                                    class="text-red-600 text-lg hover:underline"
-                                    title="Xóa campaign"
-                                >
-                                    🗑️
-                                </button>
-
-                                <!-- Link Public Viewer campaign (cho khách xem) -->
-                                <a
-                                    :href="`/public/${item._id}`"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-green-600 text-lg hover:underline"
-                                    title="Xem công khai"
-                                >
-                                    🌐
-                                </a>
-                            </td>
-
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Pagination -->
-                    <div class="flex justify-between items-center mt-4">
-                        <button @click="prevPage" :disabled="page === 1"
-                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Trang trước
-                        </button>
-                        <span>Trang {{ page }}</span>
-                        <button @click="nextPage" :disabled="!hasMore"
-                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50">Trang sau
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
-import {ref, reactive, onMounted, watch} from 'vue'
-import {useNuxtApp} from '#app'
-import { message } from 'ant-design-vue';
+import { ref, reactive, onMounted, watch } from 'vue'
+import { useNuxtApp } from '#app'
+import { message } from 'ant-design-vue'
 
-definePageMeta({layout: 'default'})
+definePageMeta({ layout: 'default' })
 
-const {$axios} = useNuxtApp()
+const { $axios } = useNuxtApp()
 
-// States
 const campaigns = ref([])
-const loading = ref(true)
+const loading = ref(false)
 const page = ref(1)
 const limit = 5
-const hasMore = ref(false)
+const total = ref(0)
 
-// Filters
 const filters = reactive({
     type: '',
     status: ''
 })
 
-// Fetch data
+// Gọi API
 const fetchCampaigns = async () => {
     loading.value = true
     try {
-        console.log('🔎 Fetching campaigns with filters:', filters, 'Page:', page.value)
-
         const res = await $axios.get('/api/campaigns', {
             params: {
                 page: page.value,
-                limit: limit,
+                limit,
                 type: filters.type,
                 status: filters.status
             }
         })
 
         campaigns.value = res.data.data
-        hasMore.value = page.value * limit < res.data.pagination.total
+        total.value = res.data.pagination.total
     } catch (err) {
-        console.error('❌ Lỗi fetch campaigns:', err)
+        message.error('Lỗi khi tải dữ liệu')
+        console.error(err)
     } finally {
         loading.value = false
     }
 }
 
-// Filter handlers
+// Lọc
 const applyFilter = () => {
     page.value = 1
     fetchCampaigns()
@@ -204,159 +54,149 @@ const resetFilter = () => {
     fetchCampaigns()
 }
 
-// Pagination handlers
-const nextPage = () => {
-    if (hasMore.value) {
-        page.value++
-        fetchCampaigns()
-    }
-}
-
-const prevPage = () => {
-    if (page.value > 1) {
-        page.value--
-        fetchCampaigns()
-    }
-}
-
-// CRUD actions
-const deleteCampaign = async (id) => {
-    if (!confirm('Bạn có chắc muốn xóa campaign này không?')) return
-
-    try {
-        await $axios.delete(`/api/campaigns/${id}`)
-        alert('Xóa campaign thành công!')
-        fetchCampaigns()
-    } catch (err) {
-        console.error('❌ Xóa thất bại:', err)
-        alert('Xóa thất bại!')
-    }
-}
-
+// Toggle trạng thái
 const toggleStatus = async (item) => {
     const newStatus = item.status === 'active' ? 'inactive' : 'active'
     try {
         await $axios.put(`/api/campaigns/${item._id}/status`, { status: newStatus })
         item.status = newStatus
-        message.success(`Đã chuyển trạng thái sang "${newStatus === 'active' ? 'Hoạt động' : 'Tạm dừng'}"`)
+        message.success(`Đã chuyển sang "${newStatus}"`)
     } catch (err) {
-        console.error('❌ Cập nhật trạng thái thất bại:', err)
-        message.error('❌ Không thể cập nhật trạng thái! Vui lòng thử lại.')
+        message.error('Không thể cập nhật trạng thái')
     }
 }
 
+// Xoá
+const deleteCampaign = async (id) => {
+    try {
+        await $axios.delete(`/api/campaigns/${id}`)
+        message.success('Xoá thành công!')
+        fetchCampaigns()
+    } catch (err) {
+        message.error('Không thể xoá!')
+    }
+}
 
-// Export CSV
+// Xuất CSV
 const exportCSV = () => {
-    const headers = ['Tên Campaign', 'Loại', 'Trạng thái', 'Số lượt quét', 'Ngày tạo']
+    const headers = ['Tên Campaign', 'Loại', 'Trạng thái', 'Lượt quét', 'Ngày tạo']
     const rows = campaigns.value.map(item => [
-        item.name,
-        item.type,
-        item.status,
-        item.scanCount || 0,
-        formatDate(item.createdAt)
+        item.name, item.type, item.status, item.scanCount || 0, formatDate(item.createdAt)
     ])
 
-    let csvContent = 'data:text/csv;charset=utf-8,'
-    csvContent += headers.join(',') + '\n'
-    rows.forEach(row => {
-        csvContent += row.join(',') + '\n'
-    })
+    let csv = 'data:text/csv;charset=utf-8,' + headers.join(',') + '\n'
+    rows.forEach(row => { csv += row.join(',') + '\n' })
 
-    const encodedUri = encodeURI(csvContent)
     const link = document.createElement('a')
-    link.setAttribute('href', encodedUri)
-    link.setAttribute('download', 'campaigns.csv')
+    link.href = encodeURI(csv)
+    link.download = 'campaigns.csv'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
 }
 
-// Utils
 const formatDate = (dateStr) => {
     const date = new Date(dateStr)
     return date.toLocaleDateString('vi-VN')
 }
 
-// Auto-fetch on filters change (Optional: realtime filter)
-watch(() => [filters.type, filters.status], () => {
-    page.value = 1
-    fetchCampaigns()
-})
-
-// Init fetch
-onMounted(() => {
-    fetchCampaigns()
-})
+watch(() => [filters.type, filters.status], applyFilter)
+onMounted(fetchCampaigns)
 </script>
 
-<style scoped>
-th, td {
-    white-space: nowrap;
-}
+<template>
+    <div class="bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-bold">📋 Quản lý QR code</h2>
 
-/* Nhỏ gọn hơn */
-/* Container label */
-.switch-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px; /* khoảng cách giữa switch và chữ */
-    cursor: pointer;
-    min-width: 120px; /* nếu cần cố định độ rộng */
-}
+        <!-- Bộ lọc -->
+        <div class="mb-4">
+            <a-space wrap>
+                <a-select
+                    v-model:value="filters.type"
+                    placeholder="Loại QR"
+                    allow-clear
+                    style="min-width: 180px"
+                >
+                    <a-select-option value="vcard">👤 vCard</a-select-option>
+                    <a-select-option value="product">📦 Sản phẩm</a-select-option>
+                    <a-select-option value="business">🏢 Doanh nghiệp</a-select-option>
+                </a-select>
 
-/* Ẩn input */
-.switch-container input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+                <a-select
+                    v-model:value="filters.status"
+                    placeholder="Trạng thái"
+                    allow-clear
+                    style="min-width: 180px"
+                >
+                    <a-select-option value="active">Hoạt động</a-select-option>
+                    <a-select-option value="inactive">Tạm dừng</a-select-option>
+                </a-select>
 
-/* Switch cơ bản */
-.slider {
-    position: relative;
-    display: inline-block;
-    width: 42px;
-    height: 22px;
-    background-color: #ccc;
-    border-radius: 9999px;
-    transition: background-color 0.3s;
-}
+                <a-button type="primary" @click="applyFilter">Lọc</a-button>
+                <a-button @click="resetFilter">Xoá lọc</a-button>
+                <a-button type="success" @click="exportCSV">📤 Xuất CSV</a-button>
+            </a-space>
+        </div>
 
-/* Nút tròn */
-.slider::before {
-    content: "";
-    position: absolute;
-    height: 16px;
-    width: 16px;
-    left: 3px;
-    top: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s;
-}
+        <!-- Bảng dữ liệu -->
+        <a-table
+            :dataSource="campaigns"
+            :loading="loading"
+            :pagination="false"
+            rowKey="_id"
+            bordered
+        >
+            <a-table-column title="Tên Campaign" dataIndex="name" key="name" />
+            <a-table-column title="Loại" dataIndex="type" key="type">
+                <template #default="{ text }">
+                    <a-tag :color="text === 'vcard' ? 'green' : text === 'product' ? 'blue' : 'orange'">{{ text }}</a-tag>
+                </template>
+            </a-table-column>
 
-/* Khi bật */
-input:checked + .slider {
-    background-color: #10b981; /* xanh */
-}
+            <a-table-column title="Trạng thái" key="status">
+                <template #default="{ record }">
+                    <a-switch
+                        :checked="record.status === 'active'"
+                        checked-children="Hoạt động"
+                        un-checked-children="Tạm dừng"
+                        @change="() => toggleStatus(record)"
+                    />
+                </template>
+            </a-table-column>
 
-input:checked + .slider::before {
-    transform: translateX(20px);
-}
+            <a-table-column title="Lượt quét" key="scanCount">
+                <template #default="{ record }">
+                    {{ record.scanCount || 0 }}
+                </template>
+            </a-table-column>
 
-/* Label chữ */
-.switch-label-text {
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap; /* giữ chữ không xuống dòng */
-}
+            <a-table-column title="Ngày tạo" key="createdAt">
+                <template #default="{ record }">
+                    {{ formatDate(record.createdAt) }}
+                </template>
+            </a-table-column>
 
-.switch-label-text {
-    font-size: 14px;
-    font-weight: 600;
-    transition: color 0.3s;
-}
+            <a-table-column title="Hành động" key="actions">
+                <template #default="{ record }">
+                    <a-space>
+                        <NuxtLink :to="`/campaigns/${record._id}`">👁️</NuxtLink>
+                        <NuxtLink :to="`/campaigns/edit/${record._id}`">✏️</NuxtLink>
+                        <a @click="deleteCampaign(record._id)" class="text-red-600">🗑️</a>
+                        <a :href="`/public/${record._id}`" target="_blank">🌐</a>
+                    </a-space>
+                </template>
+            </a-table-column>
+        </a-table>
 
-
-</style>
+        <!-- Phân trang -->
+        <div class="mt-4 text-center">
+            <a-pagination
+                :current="page"
+                :total="total"
+                :pageSize="limit"
+                show-less-items
+                @change="(p) => { page = p; fetchCampaigns() }"
+            />
+        </div>
+    </div>
+</template>

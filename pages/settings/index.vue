@@ -1,27 +1,24 @@
 <template>
-    <div class="p-6 w-full bg-white rounded shadow">
-        <h2 class="text-2xl font-bold mb-6">⚙️ Cài đặt hệ thống</h2>
+    <a-card class="w-full bg-white">
+        <template #title>
+            ⚙️ Cài đặt hệ thống
+        </template>
 
-        <div class="border-b mb-4">
-            <button @click="activeTab = 'app'" :class="tabClass('app')">Thông tin</button>
-            <button @click="activeTab = 'qr'" :class="tabClass('qr')">QR Code</button>
-            <button @click="activeTab = 'api'" :class="tabClass('api')">API Keys</button>
-            <button @click="activeTab = 'security'" :class="tabClass('security')">Bảo mật</button>
-        </div>
-
-        <div v-if="activeTab === 'app'">
-            <AppSettings />
-        </div>
-        <div v-if="activeTab === 'qr'">
-            <QRSettings />
-        </div>
-        <div v-if="activeTab === 'api'">
-            <APIKeys />
-        </div>
-        <div v-if="activeTab === 'security'">
-            <SecuritySettings />
-        </div>
-    </div>
+        <a-tabs v-model:activeKey="activeTab" tabPosition="top">
+            <a-tab-pane key="app" tab="Thông tin">
+                <AppSettings />
+            </a-tab-pane>
+            <a-tab-pane key="qr" tab="QR Code">
+                <QRSettings />
+            </a-tab-pane>
+            <a-tab-pane key="api" tab="API Keys">
+                <APIKeys />
+            </a-tab-pane>
+            <a-tab-pane key="security" tab="Bảo mật">
+                <SecuritySettings />
+            </a-tab-pane>
+        </a-tabs>
+    </a-card>
 </template>
 
 <script setup>
@@ -32,8 +29,8 @@ import APIKeys from '~/components/settings/APIKeys.vue'
 import SecuritySettings from '~/components/settings/SecuritySettings.vue'
 
 const activeTab = ref('app')
-
-const tabClass = (tab) => activeTab.value === tab
-    ? 'py-2 px-4 border-b-2 border-blue-500 font-semibold'
-    : 'py-2 px-4 text-gray-500'
 </script>
+
+<style scoped>
+/* Tuỳ chọn nếu muốn style thêm */
+</style>

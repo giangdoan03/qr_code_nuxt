@@ -1,36 +1,44 @@
 <template>
     <div class="space-y-4">
         <h3 class="text-lg font-semibold">📋 Thông tin hệ thống</h3>
-        <form @submit.prevent="saveAppSettings" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium mb-1">Tên hệ thống</label>
-                <input v-model="settings.appName" type="text" class="w-full border rounded p-2" />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">Logo (URL)</label>
-                <input v-model="settings.logoUrl" type="url" class="w-full border rounded p-2" />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">Website</label>
-                <input v-model="settings.website" type="url" class="w-full border rounded p-2" />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">Email liên hệ</label>
-                <input v-model="settings.contactEmail" type="email" class="w-full border rounded p-2" />
-            </div>
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-                Lưu thông tin
-            </button>
-        </form>
+
+        <a-form
+            layout="vertical"
+            :model="settings"
+            @submit.prevent="saveAppSettings"
+        >
+            <a-form-item label="Tên hệ thống" name="appName">
+                <a-input v-model:value="settings.appName" placeholder="VD: QR Marketing App" />
+            </a-form-item>
+
+            <a-form-item label="Logo (URL)" name="logoUrl">
+                <a-input v-model:value="settings.logoUrl" placeholder="https://example.com/logo.png" />
+            </a-form-item>
+
+            <a-form-item label="Website" name="website">
+                <a-input v-model:value="settings.website" type="url" placeholder="https://..." />
+            </a-form-item>
+
+            <a-form-item label="Email liên hệ" name="contactEmail">
+                <a-input v-model:value="settings.contactEmail" type="email" placeholder="you@example.com" />
+            </a-form-item>
+
+            <a-form-item>
+                <a-button type="primary" html-type="submit" block :loading="loading">
+                    {{ loading ? 'Đang lưu...' : 'Lưu thông tin' }}
+                </a-button>
+            </a-form-item>
+        </a-form>
     </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import { useNuxtApp } from '#app'
-import { message } from 'ant-design-vue'
+import {reactive, ref} from 'vue'
+import {useNuxtApp} from '#app'
+import {message} from 'ant-design-vue'
 
-const { $axios } = useNuxtApp()
+const {$axios} = useNuxtApp()
+const loading = ref(false)
 
 const settings = reactive({
     appName: 'QR Marketing App',
@@ -40,12 +48,15 @@ const settings = reactive({
 })
 
 const saveAppSettings = async () => {
+    loading.value = true
     try {
         await $axios.put('/api/settings/app', settings)
-        message.success('Đã lưu thông tin hệ thống!')
+        message.success('✅ Đã lưu thông tin hệ thống!')
     } catch (err) {
-        console.error('Lỗi lưu appSettings:', err)
+        console.error('❌ Lỗi lưu appSettings:', err)
         message.error('Không thể lưu thông tin hệ thống!')
+    } finally {
+        loading.value = false
     }
 }
 </script>

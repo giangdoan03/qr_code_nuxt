@@ -1,78 +1,112 @@
 <template>
-    <div class="bg-gray-100 min-h-screen flex flex-col gap-6">
-        <!-- Đang tải dữ liệu -->
+    <div class="bg-gray-100 min-h-screen flex flex-col gap-6 p-4">
+        <!-- Loading -->
         <div v-if="loading" class="text-center py-10 text-gray-500">
             Đang tải dữ liệu...
         </div>
 
-        <!-- Không tìm thấy campaign -->
+        <!-- Not Found -->
         <div v-else-if="!campaign" class="text-center py-10 text-red-500">
             Không tìm thấy campaign!
         </div>
 
-        <!-- Nội dung chính -->
-        <div v-else class="flex flex-col md:flex-row gap-6 max-w-12xl">
-            <!-- Cột 1: Thông tin chi tiết -->
-            <div class="flex-1 bg-white rounded shadow p-6">
-                <h2 class="text-2xl font-bold mb-4">📝 Chi tiết Campaign</h2>
+        <!-- Main Content -->
+        <div v-else class="grid md:grid-cols-3 gap-6">
+            <!-- Chi tiết -->
+            <a-card>
+                <template #title>
+                    📝 Chi tiết Campaign
+                </template>
 
-                <div class="space-y-2 mb-4">
-                    <p><strong>Tên campaign:</strong> {{ campaign.name }}</p>
-                    <p><strong>Mô tả:</strong> {{ campaign.description }}</p>
-                    <p><strong>Loại:</strong> {{ campaign.type }}</p>
-                    <p><strong>Trạng thái:</strong> {{ campaign.status }}</p>
-                    <p><strong>Ngày tạo:</strong> {{ formatDate(campaign.createdAt) }}</p>
+                <template #extra>
+                    <a-badge :color="typeColorMap[campaign.type]">
+                        <span class="capitalize">{{ campaign.type }}</span>
+                    </a-badge>
+                </template>
+
+                <a-descriptions bordered :column="1">
+                    <a-descriptions-item label="Tên campaign">{{ campaign.name }}</a-descriptions-item>
+                    <a-descriptions-item label="Trạng thái">{{ campaign.status }}</a-descriptions-item>
+                    <a-descriptions-item label="Mô tả">{{ campaign.description }}</a-descriptions-item>
+                    <a-descriptions-item label="Ngày tạo">{{ formatDate(campaign.createdAt) }}</a-descriptions-item>
+                    <a-descriptions-item label="Loại">
+                        <a-tag :color="typeColorMap[campaign.type]">{{ campaign.type }}</a-tag>
+                    </a-descriptions-item>
+                </a-descriptions>
+
+                <div class="mt-6">
+                    <!-- Product -->
+                    <a-card v-if="campaign.type === 'product'">
+                        <template #title>📦 Sản phẩm</template>
+                        <a-descriptions :column="2">
+                            <a-descriptions-item label="Tên">{{ campaign.content.name }}</a-descriptions-item>
+                            <a-descriptions-item label="Giá">{{
+                                    formatCurrency(campaign.content.price)
+                                }}
+                            </a-descriptions-item>
+                            <a-descriptions-item label="Link">
+                                <a :href="campaign.content.link" target="_blank">{{ campaign.content.link }}</a>
+                            </a-descriptions-item>
+                        </a-descriptions>
+                    </a-card>
+
+                    <!-- vCard -->
+                    <a-card v-else-if="campaign.type === 'vcard'">
+                        <template #title>👤 vCard</template>
+                        <a-descriptions :column="1">
+                            <a-descriptions-item label="Họ tên">{{ campaign.content.fullName }}</a-descriptions-item>
+                            <a-descriptions-item label="Điện thoại">{{ campaign.content.phone }}</a-descriptions-item>
+                            <a-descriptions-item label="Email">{{ campaign.content.email }}</a-descriptions-item>
+                            <a-descriptions-item label="Địa chỉ">{{ campaign.content.address }}</a-descriptions-item>
+                            <a-descriptions-item label="Website">
+                                <a :href="campaign.content.website" target="_blank">{{ campaign.content.website }}</a>
+                            </a-descriptions-item>
+                        </a-descriptions>
+                    </a-card>
+
+                    <!-- Business -->
+                    <a-card v-else-if="campaign.type === 'business'">
+                        <template #title>🏢 Doanh nghiệp</template>
+                        <a-descriptions :column="2">
+                            <a-descriptions-item label="Tên công ty">{{campaign.content.companyName }}
+                            </a-descriptions-item>
+                            <a-descriptions-item label="Địa chỉ">{{ campaign.content.address }}</a-descriptions-item>
+                            <a-descriptions-item label="Điện thoại">{{ campaign.content.phone }}</a-descriptions-item>
+                            <a-descriptions-item label="Email">{{ campaign.content.email }}</a-descriptions-item>
+                            <a-descriptions-item label="Mã số thuế">{{ campaign.content.taxCode }}</a-descriptions-item>
+                            <a-descriptions-item label="Website">
+                                <a :href="campaign.content.website" target="_blank">{{ campaign.content.website }}</a>
+                            </a-descriptions-item>
+                        </a-descriptions>
+                    </a-card>
                 </div>
+            </a-card>
 
-                <!-- Nội dung theo loại -->
-                <div v-if="campaign.type === 'product'" class="bg-gray-50 p-4 rounded">
-                    <h3 class="font-semibold mb-2">📦 Sản phẩm</h3>
-                    <p><strong>Tên:</strong> {{ campaign.content.name }}</p>
-                    <p><strong>Giá:</strong> {{ formatCurrency(campaign.content.price) }}</p>
-                    <p>
-                        <strong>Link:</strong>
-                        <a :href="campaign.content.link" target="_blank" class="text-blue-600 hover:underline">
-                            {{ campaign.content.link }}
-                        </a>
-                    </p>
+            <!-- QR Code + URL -->
+            <a-card>
+                <template #title>🔗 URL & QR Code</template>
+                <div class="text-center mb-4">
+                    <p class="text-sm text-gray-500">URL Campaign:</p>
+                    <a :href="campaign.url" target="_blank" class="break-all text-blue-500">{{ campaign.url }}</a>
                 </div>
+                <client-only>
+                    <VueQrcode
+                        ref="qrRef"
+                        :value="campaign.url"
+                        :options="{ width: 200 }"
+                        class="mx-auto"
+                    />
+                </client-only>
 
-                <div v-else-if="campaign.type === 'vcard'" class="bg-gray-50 p-4 rounded">
-                    <h3 class="font-semibold mb-2">👤 vCard</h3>
-                    <p><strong>Họ tên:</strong> {{ campaign.content.fullName }}</p>
-                    <p><strong>Điện thoại:</strong> {{ campaign.content.phone }}</p>
-                    <p><strong>Email:</strong> {{ campaign.content.email }}</p>
-                    <p><strong>Địa chỉ:</strong> {{ campaign.content.address }}</p>
-                    <p>
-                        <strong>Website:</strong>
-                        <a :href="campaign.content.website" target="_blank" class="text-blue-600 hover:underline">
-                            {{ campaign.content.website }}
-                        </a>
-                    </p>
-                </div>
-
-                <div v-else-if="campaign.type === 'business'" class="bg-gray-50 p-4 rounded">
-                    <h3 class="font-semibold mb-2">🏢 Doanh nghiệp</h3>
-                    <p><strong>Tên công ty:</strong> {{ campaign.content.companyName }}</p>
-                    <p><strong>Địa chỉ:</strong> {{ campaign.content.address }}</p>
-                    <p><strong>Điện thoại:</strong> {{ campaign.content.phone }}</p>
-                    <p><strong>Email:</strong> {{ campaign.content.email }}</p>
-                    <p><strong>Mã số thuế:</strong> {{ campaign.content.taxCode }}</p>
-                    <p>
-                        <strong>Website:</strong>
-                        <a :href="campaign.content.website" target="_blank" class="text-blue-600 hover:underline">
-                            {{ campaign.content.website }}
-                        </a>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Cột 2: Preview Mobile -->
-            <div class="w-full md:w-1/3 bg-white rounded shadow p-6 flex flex-col items-center">
-                <h3 class="text-lg font-semibold mb-4">📱 Preview Mobile</h3>
-
-                <div class="border rounded-lg p-4 w-full max-w-xs bg-gray-50 shadow-inner text-sm text-gray-700">
-                    <p class="font-bold text-lg mb-3">{{ campaign.name }}</p>
+                <a-button block type="primary" class="mt-4" @click="downloadQR">
+                    📥 Tải QR Code
+                </a-button>
+            </a-card>
+            <!-- Mobile Preview -->
+            <a-card>
+                <template #title>📱 Preview Mobile</template>
+                <div class="border rounded-lg p-4 bg-gray-50 shadow-inner text-sm text-gray-700 max-w-xs mx-auto">
+                    <p class="font-bold text-lg mb-3 text-center">{{ campaign.name }}</p>
 
                     <div v-if="campaign.type === 'product'">
                         <p>🛒 {{ campaign.content.name }}</p>
@@ -83,7 +117,6 @@
                     </div>
 
                     <div v-else-if="campaign.type === 'vcard'">
-                        <!-- Hiển thị avatar nếu có -->
                         <div v-if="campaign.content.avatar" class="mb-3 flex justify-center">
                             <img
                                 :src="campaign.content.avatar"
@@ -91,7 +124,6 @@
                                 class="w-24 h-24 rounded-full border object-cover"
                             />
                         </div>
-
                         <p>👤 {{ campaign.content.fullName }}</p>
                         <p>📞 {{ campaign.content.phone }}</p>
                         <p>✉️ {{ campaign.content.email }}</p>
@@ -102,42 +134,13 @@
                         <p>🏢 {{ campaign.content.companyName }}</p>
                         <p>📍 {{ campaign.content.address }}</p>
                         <p>📞 {{ campaign.content.phone }}</p>
+                        <p>🌐 {{ campaign.content.website }}</p>
                     </div>
                 </div>
-            </div>
-
-
-            <!-- Cột 3: QR Code + URL -->
-            <div class="w-full md:w-1/4 bg-white rounded shadow p-4 flex flex-col items-center">
-                <h3 class="text-lg font-semibold mb-4">🔗 URL & QR Code</h3>
-
-                <!-- URL Campaign -->
-                <div class="text-center mb-4 w-full break-all">
-                    <p class="text-sm mb-1 text-gray-500">URL Campaign:</p>
-                    <a :href="campaign.url" target="_blank" class="text-blue-600 hover:underline text-sm">
-                        {{ campaign.url }}
-                    </a>
-                </div>
-
-                <!-- QR Code (Canvas) -->
-                <VueQrcode
-                    ref="qrRef"
-                    :value="campaign.url"
-                    :options="{ width: 200 }"
-                    class="mx-auto"
-                />
-
-                <!-- Tải QR -->
-                <button
-                    @click="downloadQR"
-                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm mt-4"
-                >
-                    📥 Tải QR Code
-                </button>
-            </div>
+            </a-card>
         </div>
 
-        <!-- Link quay lại -->
+        <!-- Back link -->
         <div class="text-center mt-6">
             <NuxtLink to="/campaigns/manage" class="text-gray-600 hover:underline">
                 ← Quay lại danh sách
@@ -159,14 +162,18 @@ const campaign = ref(null)
 const loading = ref(true)
 const qrRef = ref(null)
 
-// Lấy chi tiết campaign
+const typeColorMap = {
+    product: 'blue',
+    vcard: 'green',
+    business: 'orange'
+}
+
 const fetchCampaignDetail = async () => {
     loading.value = true
     try {
         const res = await $axios.get(`/api/campaigns/${route.params.id}`)
         campaign.value = res.data.data
-
-        await nextTick() // Đợi DOM render xong
+        await nextTick()
     } catch (err) {
         console.error('❌ Lỗi lấy chi tiết campaign:', err)
     } finally {
@@ -174,26 +181,22 @@ const fetchCampaignDetail = async () => {
     }
 }
 
-// Định dạng ngày
 const formatDate = (dateStr) => {
     const date = new Date(dateStr)
     return date.toLocaleDateString('vi-VN')
 }
 
-// Định dạng giá tiền
 const formatCurrency = (number) => {
     if (!number) return '0 ₫'
-    return new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(number)
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(number)
 }
 
-// Tải QR code
 const downloadQR = () => {
     const canvas = qrRef.value?.$el
-    if (!canvas) {
-        alert('QR chưa sẵn sàng!')
-        return
-    }
-
+    if (!canvas) return alert('QR chưa sẵn sàng!')
     const dataUrl = canvas.toDataURL('image/png')
     const link = document.createElement('a')
     link.href = dataUrl
@@ -201,9 +204,7 @@ const downloadQR = () => {
     link.click()
 }
 
-onMounted(() => {
-    fetchCampaignDetail()
-})
+onMounted(fetchCampaignDetail)
 </script>
 
 <style scoped>

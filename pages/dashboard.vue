@@ -1,23 +1,37 @@
 <script setup>
 definePageMeta({
-    layout: 'default' // có thể không cần viết nếu là layout mặc định
+    layout: 'default'
 })
 </script>
 
 <template>
-    <h2 class="text-2xl font-bold mb-6">Dashboard quản lý QR Campaigns</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-2">Số campaign đã tạo</h3>
-            <p class="text-3xl font-bold text-blue-600">12</p>
-        </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-2">Lượt quét hôm nay</h3>
-            <p class="text-3xl font-bold text-green-600">230</p>
-        </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-2">Tổng lượt quét</h3>
-            <p class="text-3xl font-bold text-purple-600">5,320</p>
+    <div>
+        <a-typography-title :level="2" class="mb-6">Dashboard quản lý QR Campaigns</a-typography-title>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a-card>
+                <a-statistic
+                    title="Số campaign đã tạo"
+                    :value="12"
+                    value-style="color: #1d4ed8; font-size: 28px;"
+                />
+            </a-card>
+
+            <a-card>
+                <a-statistic
+                    title="Lượt quét hôm nay"
+                    :value="230"
+                    value-style="color: #16a34a; font-size: 28px;"
+                />
+            </a-card>
+
+            <a-card>
+                <a-statistic
+                    title="Tổng lượt quét"
+                    :value="5320"
+                    value-style="color: #7c3aed; font-size: 28px;"
+                />
+            </a-card>
         </div>
     </div>
 </template>
