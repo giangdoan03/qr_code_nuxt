@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col md:flex-row gap-6 p-6">
+    <div class="flex flex-col md:flex-row gap-6">
         <!-- CỘT 1: Form Ant Design -->
         <div class="md:w-1/2 w-full bg-white rounded shadow p-6">
             <h2 class="text-2xl font-bold mb-6">📦 Tạo QR Sản phẩm</h2>

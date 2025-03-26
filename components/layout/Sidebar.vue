@@ -6,7 +6,7 @@
             @click="$emit('toggleSidebar')"
         />
     </Transition>
-    <ClientOnly>
+
     <Transition name="slide">
         <a-layout-sider
             v-show="isOpen || isDesktop"
@@ -20,56 +20,56 @@
                 <h2 class="text-xl font-bold text-blue-600">QR Admin</h2>
                 <a-button type="text" class="md:hidden" @click="$emit('toggleSidebar')">✕</a-button>
             </div>
-
-            <a-menu
-                mode="inline"
-                :selected-keys="[route.path]"
-                :default-open-keys="isQRMenuActive ? ['qr'] : []"
-                class="h-full"
-            >
-                <a-menu-item key="/dashboard">
-                    <NuxtLink to="/dashboard">📊 Dashboard</NuxtLink>
-                </a-menu-item>
-
-                <a-sub-menu key="qr">
-                    <template #title>🎯 QR Marketing</template>
-                    <a-menu-item key="/campaigns/vcard">
-                        <NuxtLink to="/campaigns/vcard">👤 QR vCard</NuxtLink>
+            <ClientOnly>
+                <a-menu
+                    mode="inline"
+                    :selected-keys="[route.path]"
+                    :default-open-keys="isQRMenuActive ? ['qr'] : []"
+                    class="h-full"
+                >
+                    <a-menu-item key="/dashboard">
+                        <NuxtLink to="/dashboard">📊 Dashboard</NuxtLink>
                     </a-menu-item>
-                    <a-menu-item key="/campaigns/product">
-                        <NuxtLink to="/campaigns/product">📦 QR Sản phẩm</NuxtLink>
-                    </a-menu-item>
-                    <a-menu-item key="/campaigns/business">
-                        <NuxtLink to="/campaigns/business">🏢 QR Doanh nghiệp</NuxtLink>
-                    </a-menu-item>
-                    <a-menu-item key="/campaigns/manage">
-                        <NuxtLink to="/campaigns/manage">📋 Quản lý QR code</NuxtLink>
-                    </a-menu-item>
-                </a-sub-menu>
 
-                <a-menu-item key="/analytics">
-                    <NuxtLink to="/analytics">📈 Analytics</NuxtLink>
-                </a-menu-item>
+                    <a-sub-menu key="qr">
+                        <template #title>🎯 QR Marketing</template>
+                        <a-menu-item key="/campaigns/vcard">
+                            <NuxtLink to="/campaigns/vcard">👤 QR vCard</NuxtLink>
+                        </a-menu-item>
+                        <a-menu-item key="/campaigns/product">
+                            <NuxtLink to="/campaigns/product">📦 QR Sản phẩm</NuxtLink>
+                        </a-menu-item>
+                        <a-menu-item key="/campaigns/business">
+                            <NuxtLink to="/campaigns/business">🏢 QR Doanh nghiệp</NuxtLink>
+                        </a-menu-item>
+                        <a-menu-item key="/campaigns/manage">
+                            <NuxtLink to="/campaigns/manage">📋 Quản lý QR code</NuxtLink>
+                        </a-menu-item>
+                    </a-sub-menu>
 
-                <a-menu-item key="/users">
-                    <NuxtLink to="/users">👤 Users</NuxtLink>
-                </a-menu-item>
+                    <a-menu-item key="/analytics">
+                        <NuxtLink to="/analytics">📈 Analytics</NuxtLink>
+                    </a-menu-item>
 
-                <a-menu-item key="/settings">
-                    <NuxtLink to="/settings">⚙️ Cài đặt</NuxtLink>
-                </a-menu-item>
-            </a-menu>
+                    <a-menu-item key="/users">
+                        <NuxtLink to="/users">👤 Users</NuxtLink>
+                    </a-menu-item>
+
+                    <a-menu-item key="/settings">
+                        <NuxtLink to="/settings">⚙️ Cài đặt</NuxtLink>
+                    </a-menu-item>
+                </a-menu>
+            </ClientOnly>
         </a-layout-sider>
     </Transition>
-    </ClientOnly>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { ClientOnly } from '#components'
+import {ref, onMounted, onUnmounted, computed} from 'vue'
+import {useRoute} from 'vue-router'
+import {ClientOnly} from '#components'
 
-defineProps({ isOpen: Boolean })
+defineProps({isOpen: Boolean})
 const emit = defineEmits(['toggleSidebar'])
 
 const route = useRoute()

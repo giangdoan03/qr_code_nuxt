@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col md:flex-row gap-6 p-6">
+    <div class="flex flex-col md:flex-row gap-6">
         <!-- CỘT 1: Form nhập liệu -->
         <a-card title="👤 Tạo QR vCard" class="flex-1">
             <a-form layout="vertical" :model="form" @submit.prevent="createVCardQR">
