@@ -16,7 +16,7 @@
                         <li><NuxtLink to="/" class="block py-2 px-4 hover:bg-blue-700">Trang chủ</NuxtLink></li>
                         <li><NuxtLink to="#services" class="block py-2 px-4 hover:bg-blue-700">Dịch vụ</NuxtLink></li>
                         <li><NuxtLink to="#qr-code-types" class="block py-2 px-4 hover:bg-blue-700">QR Code</NuxtLink></li>
-                        <li><NuxtLink to="/lien-he" class="block py-2 px-4 hover:bg-blue-700">Liên hệ</NuxtLink></li>
+                        <li><NuxtLink to="/contact" class="block py-2 px-4 hover:bg-blue-700">Liên hệ</NuxtLink></li>
                     </ul>
                 </div>
             </nav>
@@ -73,7 +73,7 @@
             <section class="contact-section bg-blue-50 py-16 text-center px-4">
                 <h2 class="text-3xl font-bold mb-4">Liên hệ ngay để nhận tư vấn miễn phí!</h2>
                 <p class="text-gray-600 mb-6">Chúng tôi luôn sẵn sàng hỗ trợ bạn triển khai giải pháp QR Code và Website chuyên nghiệp.</p>
-                <NuxtLink to="/lien-he" class="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">
+                <NuxtLink to="/contact" class="inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">
                     Liên hệ ngay
                 </NuxtLink>
             </section>
