@@ -4,7 +4,7 @@
 
         <!-- Bộ lọc -->
         <a-card class="mb-6">
-            <a-row gutter="16" align="bottom">
+            <a-row :gutter="16" align="bottom">
                 <a-col :xs="24" :sm="12" :md="8">
                     <a-form-item label="Khoảng thời gian">
                         <a-range-picker v-model:value="dateRange" format="YYYY-MM-DD" />
@@ -17,29 +17,41 @@
         </a-card>
 
         <!-- Tổng quan -->
-        <a-row gutter="16" class="mb-6">
+        <a-row :gutter="16" class="mb-6">
             <a-col :xs="24" :sm="12" :md="6">
                 <a-card>
-                    <p class="text-sm text-gray-500">Tổng lượt quét</p>
-                    <p class="text-3xl font-bold text-blue-600">{{ summary.totalScans }}</p>
+                    <a-statistic
+                        title="Tổng lượt quét"
+                        :value="summary.totalScans"
+                        :value-style="statStyles.blue"
+                    />
                 </a-card>
             </a-col>
             <a-col :xs="24" :sm="12" :md="6">
                 <a-card>
-                    <p class="text-sm text-gray-500">Lượt quét hôm nay</p>
-                    <p class="text-3xl font-bold text-green-600">{{ summary.todayScans }}</p>
+                    <a-statistic
+                        title="Lượt quét hôm nay"
+                        :value="summary.todayScans"
+                        :value-style="statStyles.green"
+                    />
                 </a-card>
             </a-col>
             <a-col :xs="24" :sm="12" :md="6">
                 <a-card>
-                    <p class="text-sm text-gray-500">Campaign hoạt động</p>
-                    <p class="text-3xl font-bold text-purple-600">{{ summary.activeCampaigns }}</p>
+                    <a-statistic
+                        title="Campaign hoạt động"
+                        :value="summary.activeCampaigns"
+                        :value-style="statStyles.purple"
+                    />
                 </a-card>
             </a-col>
             <a-col :xs="24" :sm="12" :md="6">
                 <a-card>
-                    <p class="text-sm text-gray-500">Người dùng mới</p>
-                    <p class="text-3xl font-bold text-orange-600">{{ summary.newUsers }}</p>
+                    <a-statistic
+                        title="Người dùng mới"
+                        :value="summary.newUsers"
+                        :value-style="statStyles.orange"
+                    />
                 </a-card>
             </a-col>
         </a-row>
@@ -54,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useNuxtApp } from '#app'
 import dayjs from 'dayjs'
 import Chart from 'chart.js/auto'
@@ -70,8 +82,14 @@ const summary = reactive({
     newUsers: 0
 })
 
-const dateRange = ref([dayjs().subtract(7, 'day'), dayjs()])
+const statStyles = {
+    blue: { color: '#1d4ed8', fontSize: '28px' },
+    green: { color: '#16a34a', fontSize: '28px' },
+    purple: { color: '#7c3aed', fontSize: '28px' },
+    orange: { color: '#f97316', fontSize: '28px' }
+}
 
+const dateRange = ref([dayjs().subtract(7, 'day'), dayjs()])
 const chartCanvas = ref(null)
 const chartData = ref([])
 let chartInstance = null
@@ -111,14 +129,16 @@ const renderChart = () => {
         type: 'line',
         data: {
             labels,
-            datasets: [{
-                label: 'Lượt quét',
-                data,
-                borderColor: '#1890ff',
-                backgroundColor: 'rgba(24,144,255,0.1)',
-                fill: true,
-                tension: 0.3
-            }]
+            datasets: [
+                {
+                    label: 'Lượt quét',
+                    data,
+                    borderColor: '#1890ff',
+                    backgroundColor: 'rgba(24,144,255,0.1)',
+                    fill: true,
+                    tension: 0.3
+                }
+            ]
         },
         options: {
             responsive: true,

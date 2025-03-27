@@ -24,7 +24,7 @@
                 </a-form-item>
 
                 <a-form-item label="Mô tả công ty">
-                    <a-textarea v-model:value="form.description" rows="4" placeholder="Nhập mô tả" />
+                    <a-textarea v-model:value="form.description" :rows="4" placeholder="Nhập mô tả" />
                 </a-form-item>
 
                 <a-form-item label="Logo công ty (URL)">

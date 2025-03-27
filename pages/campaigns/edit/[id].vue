@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-gray-100 p-6">
         <a-spin :spinning="loading">
-            <a-row gutter="24">
+            <a-row :gutter="24">
                 <!-- Cột 1: Form chỉnh sửa -->
                 <a-col :xs="24" :md="12" :lg="14">
                     <a-card title="✏️ Chỉnh sửa Campaign">
@@ -11,14 +11,16 @@
                             </a-form-item>
 
                             <a-form-item label="Mô tả">
-                                <a-textarea v-model:value="form.description" rows="3" placeholder="Mô tả" />
+                                <a-textarea v-model:value="form.description" :rows="3" placeholder="Mô tả" />
                             </a-form-item>
 
                             <a-form-item label="Trạng thái">
-                                <a-select v-model:value="form.status">
-                                    <a-select-option value="active">Hoạt động</a-select-option>
-                                    <a-select-option value="inactive">Tạm dừng</a-select-option>
-                                </a-select>
+                                <client-only>
+                                    <a-select v-model:value="form.status">
+                                        <a-select-option value="active">Hoạt động</a-select-option>
+                                        <a-select-option value="inactive">Tạm dừng</a-select-option>
+                                    </a-select>
+                                </client-only>
                             </a-form-item>
 
                             <template v-if="form.type === 'product'">
